@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+
+<html class="light" lang="sw"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Heat - Cattle Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#00254d",
+                        "inverse-primary": "#a7c8ff",
+                        "primary-fixed": "#d5e3ff",
+                        "tertiary-fixed": "#e0e3e5",
+                        "on-tertiary-fixed": "#181c1e",
+                        "secondary-fixed": "#a4f4b6",
+                        "on-primary-fixed-variant": "#1f477b",
+                        "primary-fixed-dim": "#a7c8ff",
+                        "surface": "#f9f9ff",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#c4c7c9",
+                        "background": "#f9f9ff",
+                        "on-tertiary-fixed-variant": "#434749",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-container": "#82a6e0",
+                        "surface-container-high": "#dee8ff",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#ebf1ff",
+                        "on-primary-fixed": "#001b3b",
+                        "primary-container": "#0d3b6e",
+                        "on-surface": "#111c2c",
+                        "on-secondary-fixed-variant": "#005228",
+                        "surface-container-low": "#f0f3ff",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#111c2c",
+                        "on-tertiary-container": "#a1a5a7",
+                        "secondary": "#1b6c3b",
+                        "surface-tint": "#3a5f94",
+                        "outline-variant": "#c3c6d1",
+                        "on-secondary-fixed": "#00210c",
+                        "secondary-fixed-dim": "#89d89c",
+                        "secondary-container": "#a2f2b3",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#e7eeff",
+                        "error-container": "#ffdad6",
+                        "on-primary": "#ffffff",
+                        "outline": "#737780",
+                        "surface-dim": "#cfdaf1",
+                        "on-surface-variant": "#43474f",
+                        "surface-variant": "#d8e3fa",
+                        "on-secondary-container": "#21703f",
+                        "inverse-surface": "#263142",
+                        "surface-bright": "#f9f9ff",
+                        "tertiary-container": "#373b3d",
+                        "surface-container-highest": "#d8e3fa",
+                        "tertiary": "#212527"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1200px",
+                        "gutter": "16px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "xl": "40px",
+                        "md": "16px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "label-sm": ["Hanken Grotesk"],
+                        "body-md": ["Hanken Grotesk"],
+                        "label-lg": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Hanken Grotesk', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+        .page-transition { transition: opacity 0.3s ease-in-out, transform 0.3s ease-out; }
+        .hidden-page { display: none; opacity: 0; transform: translateY(10px); }
+        .active-page { display: block; opacity: 1; transform: translateY(0); }
+        .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.6); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05); }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- Top App Bar -->
+<header class="bg-surface border-b border-outline-variant fixed top-0 w-full z-50 px-md h-16 flex justify-between items-center max-w-container-max mx-auto left-0 right-0">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="pets">pets</span>
+<span class="font-display-lg text-display-lg text-primary">Heat</span>
+</div>
+<button class="flex items-center gap-xs text-primary font-bold hover:bg-surface-container-low transition-colors px-md py-sm rounded-xl" onclick="exportToCSV()">
+<span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
+<span class="hidden md:inline">Shamba Summary</span>
+</button>
+</header>
+<!-- Navigation Drawer (Desktop) -->
+<aside class="hidden md:flex flex-col fixed left-0 top-0 h-full w-60 z-40 bg-primary text-on-primary shadow-md">
+<div class="p-lg mt-16">
+<h2 class="font-headline-lg text-headline-lg mb-lg">Heat Management</h2>
+<nav class="space-y-sm">
+<button class="nav-item-desktop w-full flex items-center gap-md px-4 py-3 text-on-primary-fixed-variant hover:bg-primary-fixed-dim hover:text-on-primary-fixed rounded-r-full transition-all" data-nav="dashboard" onclick="navigateTo('dashboard')">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-lg text-label-lg">Dashboard</span>
+</button>
+<button class="nav-item-desktop w-full flex items-center gap-md px-4 py-3 text-on-primary-fixed-variant hover:bg-primary-fixed-dim hover:text-on-primary-fixed rounded-r-full transition-all" data-nav="herd" onclick="navigateTo('herd')">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-lg text-label-lg">My Herd</span>
+</button>
+<button class="nav-item-desktop w-full flex items-center gap-md px-4 py-3 text-on-primary-fixed-variant hover:bg-primary-fixed-dim hover:text-on-primary-fixed rounded-r-full transition-all" data-nav="oestrus" onclick="navigateTo('oestrus')">
+<span class="material-symbols-outlined" data-icon="heat_pump">heat_pump</span>
+<span class="font-label-lg text-label-lg">Oestrus</span>
+</button>
+<button class="nav-item-desktop w-full flex items-center gap-md px-4 py-3 text-on-primary-fixed-variant hover:bg-primary-fixed-dim hover:text-on-primary-fixed rounded-r-full transition-all" data-nav="symptoms" onclick="navigateTo('symptoms')">
+<span class="material-symbols-outlined" data-icon="medical_services">medical_services</span>
+<span class="font-label-lg text-label-lg">Symptoms</span>
+</button>
+<button class="nav-item-desktop w-full flex items-center gap-md px-4 py-3 text-on-primary-fixed-variant hover:bg-primary-fixed-dim hover:text-on-primary-fixed rounded-r-full transition-all" data-nav="add" onclick="navigateTo('add')">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-label-lg text-label-lg">Add Animal</span>
+</button>
+</nav>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-60 pt-20 pb-24 px-md md:px-lg max-w-5xl mx-auto min-h-screen">
+<!-- DASHBOARD PAGE -->
+<section class="page-transition active-page" id="page-dashboard">
+<!-- Weather Widget (New) -->
+<div class="glass-card mb-lg p-md rounded-2xl flex items-center justify-between border-l-4 border-error overflow-hidden">
+<div class="flex items-center gap-md">
+<div class="bg-error-container text-error p-sm rounded-full animate-pulse">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+</div>
+<div>
+<h3 class="font-label-lg text-on-surface">Hali ya Hewa (Weather Alert)</h3>
+<p class="text-on-surface-variant font-body-md">Sasa: 28°C — <span class="text-error font-bold">Hatari kubwa ya msongo wa joto</span></p>
+</div>
+</div>
+<div class="hidden sm:block text-right">
+<span class="material-symbols-outlined text-display-lg text-on-surface-variant" data-icon="wb_sunny">wb_sunny</span>
+</div>
+</div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-primary mb-md">Habari za Leo (Shamba Summary)</h1>
+<!-- Summary Stats Bento -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-md mb-lg">
+<div class="glass-card bg-surface-container-lowest p-md rounded-xl flex flex-col justify-center">
+<span class="text-on-surface-variant font-label-sm">Total Animals</span>
+<span class="text-display-lg font-display-lg text-primary" id="stat-total">6</span>
+</div>
+<div class="glass-card bg-primary-container text-white p-md rounded-xl flex flex-col justify-center">
+<span class="font-label-sm">Total Cows</span>
+<span class="text-display-lg font-display-lg">5</span>
+</div>
+<div class="glass-card bg-secondary-container text-on-secondary-container p-md rounded-xl flex flex-col justify-center">
+<span class="font-label-sm">Active Bulls</span>
+<span class="text-display-lg font-display-lg">1</span>
+</div>
+<div class="glass-card bg-error-container text-on-error-container p-md rounded-xl flex flex-col justify-center">
+<span class="font-label-sm">Alerts</span>
+<span class="text-display-lg font-display-lg">3</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg mb-lg">
+<!-- Improved Milk Yield Section -->
+<div class="md:col-span-2 glass-card bg-surface-container-lowest p-lg rounded-xl">
+<div class="flex justify-between items-center mb-md">
+<h2 class="font-headline-md text-primary">Mavuno ya Maziwa (Yield)</h2>
+<div class="flex gap-xs items-center text-secondary font-label-lg">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+                        +5% vs Wiki iliyopita
+                    </div>
+</div>
+<!-- Line Chart Visualization (SVG) -->
+<div class="relative h-44 w-full mb-lg">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 700 160">
+<defs>
+<lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="5%" stop-color="#1b6c3b" stop-opacity="0.3"></stop>
+<stop offset="95%" stop-color="#1b6c3b" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M 0 130 Q 50 120 100 110 Q 150 100 200 115 Q 250 130 300 95 Q 350 60 400 80 Q 450 100 500 70 Q 550 40 600 55 Q 650 70 700 65 V 160 H 0 Z" fill="url(#chartGradient)"></path>
+<path d="M 0 130 Q 50 120 100 110 Q 150 100 200 115 Q 250 130 300 95 Q 350 60 400 80 Q 450 100 500 70 Q 550 40 600 55 Q 650 70 700 65" fill="none" stroke="#1b6c3b" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<div class="flex justify-between mt-sm">
+<span class="text-label-sm text-on-surface-variant">Jumatatu</span>
+<span class="text-label-sm text-on-surface-variant">Jumatano</span>
+<span class="text-label-sm text-on-surface-variant">Ijumaa</span>
+<span class="text-label-sm text-on-surface-variant">Jumapili</span>
+</div>
+</div>
+</div>
+<!-- Shamba Financials (New) -->
+<div class="md:col-span-1 glass-card bg-surface-container-lowest p-lg rounded-xl flex flex-col">
+<h2 class="font-headline-md text-primary mb-md">Fedha za Shamba</h2>
+<div class="space-y-md flex-1 flex flex-col justify-center">
+<div class="p-md rounded-xl bg-surface-container border border-outline-variant">
+<span class="text-label-sm text-on-surface-variant">Mapato (Revenue)</span>
+<div class="text-headline-lg font-bold text-secondary">KSh 125,400</div>
+</div>
+<div class="p-md rounded-xl bg-surface-container border border-outline-variant">
+<span class="text-label-sm text-on-surface-variant">Gharama (Expenses)</span>
+<div class="text-headline-lg font-bold text-error">KSh 42,000</div>
+</div>
+<div class="pt-sm border-t border-outline-variant flex justify-between items-center">
+<span class="font-label-lg">Net Profit</span>
+<span class="font-headline-md text-primary">KSh 83,400</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Actions -->
+<div class="flex flex-wrap gap-sm mb-lg">
+<button class="flex-1 min-w-[140px] bg-primary text-on-primary py-3 px-4 rounded-xl font-label-lg flex items-center justify-center gap-xs shadow-md" onclick="navigateTo('oestrus')">
+<span class="material-symbols-outlined" data-icon="monitor_heart">monitor_heart</span> Log Signs
+            </button>
+<button class="flex-1 min-w-[140px] bg-secondary text-on-secondary py-3 px-4 rounded-xl font-label-lg flex items-center justify-center gap-xs shadow-md" onclick="navigateTo('add')">
+<span class="material-symbols-outlined" data-icon="add">add</span> Add Animal
+            </button>
+<button class="flex-1 min-w-[140px] border border-primary text-primary py-3 px-4 rounded-xl font-label-lg flex items-center justify-center gap-xs shadow-sm bg-white" onclick="navigateTo('symptoms')">
+<span class="material-symbols-outlined" data-icon="stethoscope">stethoscope</span> Symptoms
+            </button>
+</div>
+<!-- Urgent Alerts -->
+<h2 class="font-headline-md text-headline-md text-on-surface mb-md">Onyo ya Haraka (Urgent Alerts)</h2>
+<div class="space-y-md">
+<div class="glass-card p-md rounded-xl flex items-center gap-md border-l-4 border-error">
+<div class="bg-error-container text-error p-sm rounded-full">
+<span class="material-symbols-outlined" data-icon="heat_pump">heat_pump</span>
+</div>
+<div>
+<h3 class="font-headline-md text-on-surface">Daisy: Oestrus Alert</h3>
+<p class="text-on-surface-variant font-body-md">Signs detected 2 hours ago. Optimal breeding window starting.</p>
+</div>
+</div>
+<div class="glass-card p-md rounded-xl flex items-center gap-md border-l-4 border-primary">
+<div class="bg-primary-container text-primary p-sm rounded-full">
+<span class="material-symbols-outlined" data-icon="vaccines">vaccines</span>
+</div>
+<div>
+<h3 class="font-headline-md text-on-surface">Bessie: Vaccination Due</h3>
+<p class="text-on-surface-variant font-body-md">LSD Booster scheduled for tomorrow. Prepare animal.</p>
+</div>
+</div>
+<div class="glass-card p-md rounded-xl flex items-center gap-md border-l-4 border-error">
+<div class="bg-error-container text-error p-sm rounded-full">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+</div>
+<div>
+<h3 class="font-headline-md text-on-surface">Mama Ng'ombe: Mastitis Flag</h3>
+<p class="text-on-surface-variant font-body-md">Reduced milk yield and abnormal color reported.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- MY HERD PAGE -->
+<section class="page-transition hidden-page" id="page-herd">
+<div class="flex justify-between items-center mb-lg">
+<h1 class="font-headline-lg text-primary">Mifugo Yangu (My Herd)</h1>
+<div class="bg-surface-container-high rounded-full px-md py-xs flex items-center gap-xs text-primary font-label-lg">
+                6 Total
+            </div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md" id="herd-container">
+<!-- Cards injected via JS -->
+</div>
+</section>
+<!-- OESTRUS CHECKER PAGE -->
+<section class="page-transition hidden-page" id="page-oestrus">
+<h1 class="font-headline-lg text-primary mb-lg">Oestrus Checker (Uchambuzi wa Joto)</h1>
+<div class="glass-card p-lg rounded-xl">
+<div class="mb-md">
+<label class="block font-label-lg mb-xs text-on-surface">Select Cow</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md text-body-md outline-none focus:border-primary transition-all" id="oestrus-cow-select">
+<option>Bessie (#101)</option>
+<option>Daisy (#102)</option>
+<option>Mama Ng'ombe (#103)</option>
+<option>Juma (#104)</option>
+<option>Baraka (#105)</option>
+<option>Tamu (#106)</option>
+</select>
+</div>
+<p class="text-on-surface-variant font-body-md mb-md">Select all visible signs observed in the last 12 hours:</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-sm mb-lg" id="oestrus-signs">
+<!-- JS loop for signs -->
+</div>
+<div class="hidden mb-lg p-md rounded-xl text-center" id="oestrus-result">
+<!-- Result injected here -->
+</div>
+<div class="flex gap-md">
+<button class="flex-1 bg-primary text-on-primary py-lg rounded-xl font-label-lg hover:opacity-90 transition-opacity shadow-md" onclick="analyzeOestrus()">Analyze Signs</button>
+<button class="flex-1 bg-secondary text-on-secondary py-lg rounded-xl font-label-lg hover:opacity-90 transition-opacity shadow-md" onclick="logOestrus()">Log Result</button>
+</div>
+</div>
+</section>
+<!-- SYMPTOM CHECKER PAGE -->
+<section class="page-transition hidden-page" id="page-symptoms">
+<h1 class="font-headline-lg text-primary mb-lg">Symptom Checker (Tathmini ya Afya)</h1>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<div class="md:col-span-1 glass-card p-md rounded-xl h-fit">
+<h2 class="font-headline-md mb-md">Select Symptoms</h2>
+<div class="space-y-sm max-h-[530px] overflow-y-auto pr-xs" id="symptoms-list">
+<!-- JS loop for symptoms -->
+</div>
+</div>
+<div class="md:col-span-2 space-y-md">
+<div class="bg-surface-container rounded-xl p-lg min-h-[300px] flex flex-col items-center justify-center text-on-surface-variant italic border border-dashed border-outline" id="disease-results">
+<span class="material-symbols-outlined text-display-lg mb-sm" data-icon="search">search</span>
+                    Select symptoms to start diagnosis
+                </div>
+</div>
+</div>
+</section>
+<!-- ADD ANIMAL PAGE -->
+<section class="page-transition hidden-page" id="page-add">
+<h1 class="font-headline-lg text-primary mb-lg">Ongeza Mnyama (Add Animal)</h1>
+<div class="glass-card p-lg rounded-xl max-w-2xl mx-auto">
+<form class="space-y-md" id="add-animal-form" onsubmit="handleFormSubmit(event)">
+<div class="grid grid-cols-2 gap-md">
+<div class="col-span-2 md:col-span-1">
+<label class="block font-label-lg mb-xs">Animal Name</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" placeholder="e.g. Neema" required="" type="text"/>
+</div>
+<div class="col-span-2 md:col-span-1">
+<label class="block font-label-lg mb-xs">Tag Number</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" placeholder="#000" required="" type="text"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div>
+<label class="block font-label-lg mb-xs">Breed</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md">
+<option>Friesian</option>
+<option>Ayrshire</option>
+<option>Boran</option>
+<option>Jersey</option>
+</select>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Type</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md">
+<option>Cow</option>
+<option>Bull</option>
+<option>Heifer</option>
+</select>
+</div>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Primary Purpose</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md">
+<option>Dairy (Maziwa)</option>
+<option>Beef (Nyama)</option>
+<option>Breeding</option>
+</select>
+</div>
+<button class="w-full bg-secondary text-on-secondary py-lg rounded-xl font-headline-md mt-lg hover:opacity-90 shadow-md" type="submit">Sajili Mnyama (Register Animal)</button>
+</form>
+</div>
+</section>
+</main>
+<!-- Bottom Nav (Mobile) -->
+<nav class="fixed bottom-0 w-full flex justify-around items-center h-16 bg-surface border-t border-outline-variant md:hidden z-50 shadow-lg">
+<button class="nav-item-mobile flex flex-col items-center justify-center text-on-surface-variant font-label-sm transition-colors" data-nav="dashboard" onclick="navigateTo('dashboard')">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Shamba</span>
+</button>
+<button class="nav-item-mobile flex flex-col items-center justify-center text-on-surface-variant font-label-sm transition-colors" data-nav="herd" onclick="navigateTo('herd')">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span>Mifugo</span>
+</button>
+<button class="nav-item-mobile flex flex-col items-center justify-center text-on-surface-variant font-label-sm transition-colors" data-nav="oestrus" onclick="navigateTo('oestrus')">
+<span class="material-symbols-outlined" data-icon="heat_pump">heat_pump</span>
+<span>Joto</span>
+</button>
+<button class="nav-item-mobile flex flex-col items-center justify-center text-on-surface-variant font-label-sm transition-colors" data-nav="symptoms" onclick="navigateTo('symptoms')">
+<span class="material-symbols-outlined" data-icon="medical_services">medical_services</span>
+<span>Dalili</span>
+</button>
+</nav>
+<!-- Modal for Animal Profile -->
+<div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] hidden items-center justify-center p-md" id="profile-modal">
+<div class="bg-surface w-full max-w-xl rounded-2xl overflow-hidden shadow-xl animate-scaleIn">
+<div class="h-40 bg-cover bg-center relative" id="modal-header-bg" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC3xDzJXyde0osWqR9Q1jRl5tG5F63tUcInV1wSEPQVVX85m6ExcB3CaUxi75XKFEFlT4xo4FxlwBA7GIiX7PRp6bl_BYYOC_kZSf2gVigYSYI22WiXv1V835HeBzPPqlAJHgMkO7Npg-FDCk4dEO3SEPx3XjyUvDwmRxlT-X1undE0QI09Emxwci4CSb-J4U1SSCz9IoVDF8cKUSzMJuI25NcJUyD6KMsko-3Se6yqL0-c7hWQgHCZGZ2e0tSUejoo-CAq5SqG6bUV')">
+<button class="absolute top-md right-md bg-white/20 backdrop-blur-md text-white p-xs rounded-full" onclick="closeModal()">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<div class="p-lg">
+<div class="flex justify-between items-start mb-md">
+<div>
+<h2 class="font-display-lg text-display-lg text-primary" id="modal-name">Bessie</h2>
+<span class="font-body-md text-on-surface-variant" id="modal-tag">Tag #101</span>
+</div>
+<span class="px-md py-xs rounded-full font-label-lg" id="modal-status">Healthy</span>
+</div>
+<!-- Tabs -->
+<div class="flex border-b border-outline-variant mb-md">
+<button class="flex-1 py-md border-b-2 border-primary text-primary font-bold">Info</button>
+<button class="flex-1 py-md text-on-surface-variant hover:text-primary">Health</button>
+<button class="flex-1 py-md text-on-surface-variant hover:text-primary">Breeding</button>
+</div>
+<div class="space-y-md">
+<div class="flex justify-between border-b border-outline-variant pb-xs">
+<span class="font-label-lg">Breed</span>
+<span class="font-body-md" id="modal-breed">Friesian</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant pb-xs">
+<span class="font-label-lg">Purpose</span>
+<span class="font-body-md" id="modal-purpose">Dairy</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant pb-xs">
+<span class="font-label-lg">Last Calving</span>
+<span class="font-body-md">Mar 12, 2024</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Toast Notification -->
+<div class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-primary text-on-primary px-lg py-md rounded-xl shadow-lg opacity-0 transition-opacity z-[110] pointer-events-none" id="toast">
+    Success Message Here
+</div>
+<script>
+    // --- State Management ---
+    const herd = [
+        { id: 1, name: 'Bessie', tag: '#101', breed: 'Friesian', purpose: 'Dairy', status: 'Healthy', statusType: 'success', vaccination: 'LSD Booster (Scheduled: 2023-11-20)' },
+        { id: 2, name: 'Daisy', tag: '#102', breed: 'Ayrshire', purpose: 'Dairy', status: 'Heat Alert', statusType: 'error', vaccination: 'FMD (Completed: 2023-08-15)' },
+        { id: 3, name: 'Mama Ng\'ombe', tag: '#103', breed: 'Boran', purpose: 'Dairy', status: 'Sick', statusType: 'error', vaccination: 'Anthrax (Due: 2023-12-05)' },
+        { id: 4, name: 'Juma', tag: '#104', breed: 'Jersey', purpose: 'Breeding', status: 'Healthy', statusType: 'success', vaccination: 'None' },
+        { id: 5, name: 'Baraka', tag: '#105', breed: 'Friesian', purpose: 'Beef', status: 'Healthy', statusType: 'success', vaccination: 'Brucellosis (Completed: 2023-09-10)' },
+        { id: 6, name: 'Tamu', tag: '#106', breed: 'Ayrshire', purpose: 'Dairy', status: 'Pregnant', statusType: 'primary', vaccination: 'LSD (Scheduled: 2023-11-25)' }
+    ];
+
+    const oestrusSigns = [
+        'Restlessness', 'Mounting Others', 'Clear Discharge', 'Standing to be Mounted',
+        'Decreased Milk', 'Bellowing', 'Swollen Vulva', 'Chin Resting'
+    ];
+
+    const symptoms = [
+        'High Fever', 'Mouth Sores', 'Swollen Lymph Nodes', 'Decreased Milk',
+        'Skin Lumps', 'Drooling', 'Limping', 'Loss of Appetite',
+        'Bloated Stomach', 'Coughing', 'Eye Discharge', 'Nasal Discharge',
+        'Diarrhea', 'Weight Loss', 'Abortion', 'Dullness'
+    ];
+
+    const diseases = [
+        { name: 'East Coast Fever (ECF)', symptoms: ['High Fever', 'Swollen Lymph Nodes', 'Coughing'], action: 'Call Vet Immediately', color: 'error' },
+        { name: 'Mastitis', symptoms: ['Decreased Milk', 'Dullness'], action: 'Check Udder/Milk Color', color: 'primary' },
+        { name: 'Foot & Mouth (FMD)', symptoms: ['Mouth Sores', 'Drooling', 'Limping', 'High Fever'], action: 'Isolate & Call Vet', color: 'error' },
+        { name: 'Lumpy Skin (LSD)', symptoms: ['Skin Lumps', 'High Fever', 'Nasal Discharge'], action: 'Isolate Animal', color: 'error' },
+        { name: 'Bloat', symptoms: ['Bloated Stomach', 'Loss of Appetite'], action: 'Anti-Bloat Treatment', color: 'primary' },
+        { name: 'Milk Fever', symptoms: ['Dullness', 'Loss of Appetite', 'Limping'], action: 'Calcium Supplement', color: 'primary' }
+    ];
+
+    // --- Navigation ---
+    function navigateTo(pageId) {
+        const pages = ['dashboard', 'herd', 'oestrus', 'symptoms', 'add'];
+        pages.forEach(p => {
+            const el = document.getElementById(`page-${p}`);
+            if (p === pageId) {
+                el.classList.remove('hidden-page');
+                el.classList.add('active-page');
+            } else {
+                el.classList.remove('active-page');
+                el.classList.add('hidden-page');
+            }
+        });
+
+        // Update Nav Styles
+        document.querySelectorAll('[data-nav]').forEach(btn => {
+            const isActive = btn.dataset.nav === pageId;
+            if (window.innerWidth >= 768) {
+                // Desktop Sidebar Logic
+                btn.className = isActive 
+                    ? "w-full flex items-center gap-md px-4 py-3 bg-secondary-container text-on-secondary-container rounded-r-full font-bold transition-all shadow-sm"
+                    : "w-full flex items-center gap-md px-4 py-3 text-on-primary-fixed-variant hover:bg-primary-fixed-dim hover:text-on-primary-fixed rounded-r-full transition-all";
+            } else {
+                // Mobile Bottom Nav Logic
+                btn.className = isActive 
+                    ? "flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 transition-all"
+                    : "flex flex-col items-center justify-center text-on-surface-variant font-label-sm transition-all";
+            }
+        });
+        
+        // Re-render Herd if needed
+        if (pageId === 'herd') renderHerd();
+    }
+
+    // --- Renderers ---
+    function renderHerd() {
+        const container = document.getElementById('herd-container');
+        container.innerHTML = herd.map(cow => `
+            <div onclick="openProfile(${cow.id})" class="glass-card p-md rounded-xl cursor-pointer hover:shadow-lg transition-all active:scale-95">
+                <div class="flex justify-between items-start mb-sm">
+                    <span class="font-headline-md text-primary">${cow.name}</span>
+                    <span class="px-sm py-xs rounded-lg font-label-sm ${getStatusClass(cow.statusType)}">${cow.status}</span>
+                </div>
+                <div class="space-y-1">
+                    <div class="text-on-surface-variant font-label-sm">Tag: ${cow.tag}</div>
+                    <div class="text-on-surface-variant font-label-sm">Breed: ${cow.breed}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function getStatusClass(type) {
+        if (type === 'success') return 'bg-secondary-container text-on-secondary-container';
+        if (type === 'error') return 'bg-error-container text-on-error-container';
+        return 'bg-primary-container text-white';
+    }
+
+    function initOestrus() {
+        const container = document.getElementById('oestrus-signs');
+        container.innerHTML = oestrusSigns.map(sign => `
+            <label class="flex items-center gap-sm p-md border border-outline-variant rounded-xl cursor-pointer hover:bg-surface-container-low transition-colors">
+                <input type="checkbox" name="oestrus-sign" value="${sign}" class="w-5 h-5 rounded border-outline text-primary focus:ring-primary">
+                <span class="font-body-md">${sign}</span>
+            </label>
+        `).join('');
+    }
+
+    function initSymptoms() {
+        const container = document.getElementById('symptoms-list');
+        container.innerHTML = symptoms.map(symp => `
+            <label class="flex items-center gap-sm p-sm border border-outline-variant rounded-lg cursor-pointer hover:bg-surface-container-low transition-colors">
+                <input type="checkbox" name="symptom" value="${symp}" onchange="analyzeSymptoms()" class="w-4 h-4 rounded border-outline text-primary focus:ring-primary">
+                <span class="font-label-lg">${symp}</span>
+            </label>
+        `).join('');
+    }
+
+    // --- Business Logic ---
+    function analyzeOestrus() {
+        const checked = document.querySelectorAll('input[name="oestrus-sign"]:checked').length;
+        const res = document.getElementById('oestrus-result');
+        res.classList.remove('hidden');
+        
+        if (checked >= 4) {
+            res.className = 'mb-lg p-md rounded-xl text-center bg-error-container text-on-error-container font-bold';
+            res.innerHTML = "High Probability! Optimal window for insemination is NOW.";
+        } else if (checked >= 1) {
+            res.className = 'mb-lg p-md rounded-xl text-center bg-primary-container text-white font-bold';
+            res.innerHTML = "Possible signs. Monitor closely every 4 hours.";
+        } else {
+            res.className = 'mb-lg p-md rounded-xl text-center bg-surface-container text-on-surface-variant';
+            res.innerHTML = "No significant signs detected.";
+        }
+    }
+
+    function logOestrus() {
+        showToast("Result logged to animal history.");
+    }
+
+    function analyzeSymptoms() {
+        const selected = Array.from(document.querySelectorAll('input[name="symptom"]:checked')).map(i => i.value);
+        const container = document.getElementById('disease-results');
+        
+        if (selected.length === 0) {
+            container.innerHTML = `<span class="material-symbols-outlined text-display-lg mb-sm" data-icon="search">search</span> Select symptoms to start diagnosis`;
+            return;
+        }
+
+        const results = diseases.map(d => {
+            const matchCount = d.symptoms.filter(s => selected.includes(s)).length;
+            const confidence = Math.round((matchCount / d.symptoms.length) * 100);
+            return { ...d, confidence };
+        }).filter(r => r.confidence > 0).sort((a,b) => b.confidence - a.confidence);
+
+        if (results.length === 0) {
+            container.innerHTML = "No disease matches found for selected symptoms. Consult a professional.";
+            return;
+        }
+
+        container.innerHTML = results.map(r => `
+            <div class="w-full bg-surface border border-outline-variant p-md rounded-xl mb-md glass-card">
+                <div class="flex justify-between items-start mb-sm">
+                    <h3 class="font-headline-md">${r.name}</h3>
+                    <span class="font-label-lg ${r.confidence > 60 ? 'text-error' : 'text-primary'}">${r.confidence}% Match</span>
+                </div>
+                <div class="w-full bg-outline-variant h-2 rounded-full mb-md overflow-hidden">
+                    <div class="bg-primary h-full transition-all duration-500" style="width: ${r.confidence}%"></div>
+                </div>
+                <div class="flex items-center gap-xs text-on-surface-variant font-body-md italic mb-md">
+                    <span class="material-symbols-outlined text-md" data-icon="lightbulb">lightbulb</span> Action: ${r.action}
+                </div>
+                <button class="w-full py-sm rounded-lg border border-primary text-primary font-label-lg hover:bg-primary-container hover:text-white transition-colors">Learn More</button>
+            </div>
+        `).join('');
+    }
+
+    function exportToCSV() {
+        const summaryData = [
+            ["FARM SUMMARY REPORT"],
+            ["Total Animals", herd.length],
+            ["Total Cows", herd.filter(a => a.purpose === 'Dairy').length],
+            [""],
+            ["HERD DETAILS"],
+            ["Name", "Tag Number", "Breed", "Primary Purpose", "Status", "Vaccination Schedule"]
+        ];
+
+        herd.forEach(animal => {
+            summaryData.push([
+                animal.name,
+                animal.tag,
+                `"${animal.breed}"`,
+                `"${animal.purpose}"`,
+                `"${animal.status}"`,
+                `"${animal.vaccination}"`
+            ]);
+        });
+
+        const csvString = summaryData.map(row => row.join(",")).join("\n");
+        const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", "heat_farm_data.csv");
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        showToast("Data exported successfully ✓");
+    }
+
+    // --- Modals & Toasts ---
+    function openProfile(id) {
+        const cow = herd.find(c => c.id === id);
+        document.getElementById('modal-name').innerText = cow.name;
+        document.getElementById('modal-tag').innerText = `Tag ${cow.tag}`;
+        document.getElementById('modal-status').innerText = cow.status;
+        document.getElementById('modal-status').className = `px-md py-xs rounded-full font-label-lg ${getStatusClass(cow.statusType)}`;
+        document.getElementById('modal-breed').innerText = cow.breed;
+        document.getElementById('modal-purpose').innerText = cow.purpose;
+        
+        const modal = document.getElementById('profile-modal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('profile-modal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    function handleFormSubmit(e) {
+        e.preventDefault();
+        const nameInput = e.target.querySelector('input[placeholder="e.g. Neema"]');
+        showToast(`${nameInput.value} has been added to your herd!`);
+        e.target.reset();
+        setTimeout(() => navigateTo('herd'), 1000);
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg;
+        t.classList.remove('opacity-0');
+        t.classList.add('opacity-100');
+        setTimeout(() => {
+            t.classList.remove('opacity-100');
+            t.classList.add('opacity-0');
+        }, 3000);
+    }
+
+    // --- Init ---
+    document.addEventListener('DOMContentLoaded', () => {
+        initOestrus();
+        initSymptoms();
+        navigateTo('dashboard');
+    });
+</script>
+</body></html>
