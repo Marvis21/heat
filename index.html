@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-
 <html class="light" lang="sw"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Heat - Cattle Management</title>
+<title>Heat </title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -130,7 +129,7 @@
 <!-- Navigation Drawer (Desktop) -->
 <aside class="hidden md:flex flex-col fixed left-0 top-0 h-full w-60 z-40 bg-primary text-on-primary shadow-md">
 <div class="p-lg mt-16">
-<h2 class="font-headline-lg text-headline-lg mb-lg">Heat Management</h2>
+<h2 class="font-headline-lg text-headline-lg mb-lg">Heat</h2>
 <nav class="space-y-sm">
 <button class="nav-item-desktop w-full flex items-center gap-md px-4 py-3 text-on-primary-fixed-variant hover:bg-primary-fixed-dim hover:text-on-primary-fixed rounded-r-full transition-all" data-nav="dashboard" onclick="navigateTo('dashboard')">
 <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
@@ -147,6 +146,10 @@
 <button class="nav-item-desktop w-full flex items-center gap-md px-4 py-3 text-on-primary-fixed-variant hover:bg-primary-fixed-dim hover:text-on-primary-fixed rounded-r-full transition-all" data-nav="symptoms" onclick="navigateTo('symptoms')">
 <span class="material-symbols-outlined" data-icon="medical_services">medical_services</span>
 <span class="font-label-lg text-label-lg">Symptoms</span>
+</button>
+<button class="nav-item-desktop w-full flex items-center gap-md px-4 py-3 text-on-primary-fixed-variant hover:bg-primary-fixed-dim hover:text-on-primary-fixed rounded-r-full transition-all" data-nav="records" onclick="navigateTo('records')">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+<span class="font-label-lg text-label-lg">Farm Records</span>
 </button>
 <button class="nav-item-desktop w-full flex items-center gap-md px-4 py-3 text-on-primary-fixed-variant hover:bg-primary-fixed-dim hover:text-on-primary-fixed rounded-r-full transition-all" data-nav="add" onclick="navigateTo('add')">
 <span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
@@ -216,15 +219,15 @@
 <div class="space-y-md flex-1 flex flex-col justify-center">
 <div class="p-md rounded-xl bg-surface-container border border-outline-variant">
 <span class="text-label-sm text-on-surface-variant">Mapato (Revenue)</span>
-<div class="text-headline-lg font-bold text-secondary">KSh 125,400</div>
+<div class="text-headline-lg font-bold text-secondary" id="dash-revenue">KSh 125,400</div>
 </div>
 <div class="p-md rounded-xl bg-surface-container border border-outline-variant">
 <span class="text-label-sm text-on-surface-variant">Gharama (Expenses)</span>
-<div class="text-headline-lg font-bold text-error">KSh 42,000</div>
+<div class="text-headline-lg font-bold text-error" id="dash-expenses">KSh 42,000</div>
 </div>
 <div class="pt-sm border-t border-outline-variant flex justify-between items-center">
 <span class="font-label-lg">Net Profit</span>
-<span class="font-headline-md text-primary">KSh 83,400</span>
+<span class="font-headline-md text-primary" id="dash-profit">KSh 83,400</span>
 </div>
 </div>
 </div>
@@ -239,6 +242,9 @@
             </button>
 <button class="flex-1 min-w-[140px] border border-primary text-primary py-3 px-4 rounded-xl font-label-lg flex items-center justify-center gap-xs shadow-sm bg-white" onclick="navigateTo('symptoms')">
 <span class="material-symbols-outlined" data-icon="stethoscope">stethoscope</span> Symptoms
+            </button>
+<button class="flex-1 min-w-[140px] border border-primary text-primary py-3 px-4 rounded-xl font-label-lg flex items-center justify-center gap-xs shadow-sm bg-white" onclick="navigateTo('records')">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span> Farm Records
             </button>
 </div>
 <!-- Urgent Alerts -->
@@ -267,7 +273,7 @@
 <span class="material-symbols-outlined" data-icon="warning">warning</span>
 </div>
 <div>
-<h3 class="font-headline-md text-on-surface">Mama Ng'ombe: Mastitis Flag</h3>
+<h3 class="font-headline-md text-on-surface">Nyota: Mastitis Flag</h3>
 <p class="text-on-surface-variant font-body-md">Reduced milk yield and abnormal color reported.</p>
 </div>
 </div>
@@ -294,7 +300,7 @@
 <select class="w-full bg-surface border border-outline rounded-xl p-md text-body-md outline-none focus:border-primary transition-all" id="oestrus-cow-select">
 <option>Bessie (#101)</option>
 <option>Daisy (#102)</option>
-<option>Mama Ng'ombe (#103)</option>
+<option>Nyota (#103)</option>
 <option>Juma (#104)</option>
 <option>Baraka (#105)</option>
 <option>Tamu (#106)</option>
@@ -330,6 +336,247 @@
                 </div>
 </div>
 </div>
+</section>
+<!-- FARM RECORDS PAGE -->
+<section class="page-transition hidden-page" id="page-records">
+<h1 class="font-headline-lg text-primary mb-lg">Kumbukumbu za Shamba (Farm Records)</h1>
+
+<!-- Record Type Tabs -->
+<div class="flex gap-xs overflow-x-auto pb-sm mb-lg" id="records-tabs">
+<button class="records-tab-btn whitespace-nowrap px-md py-sm rounded-xl font-label-lg transition-all" data-tab="milk" onclick="switchRecordTab('milk')">🥛 Milk Production</button>
+<button class="records-tab-btn whitespace-nowrap px-md py-sm rounded-xl font-label-lg transition-all" data-tab="breeding" onclick="switchRecordTab('breeding')">🐄 Breeding</button>
+<button class="records-tab-btn whitespace-nowrap px-md py-sm rounded-xl font-label-lg transition-all" data-tab="health" onclick="switchRecordTab('health')">💉 Health</button>
+<button class="records-tab-btn whitespace-nowrap px-md py-sm rounded-xl font-label-lg transition-all" data-tab="feed" onclick="switchRecordTab('feed')">🌾 Feed</button>
+<button class="records-tab-btn whitespace-nowrap px-md py-sm rounded-xl font-label-lg transition-all" data-tab="financial" onclick="switchRecordTab('financial')">💰 Financial</button>
+<button class="records-tab-btn whitespace-nowrap px-md py-sm rounded-xl font-label-lg transition-all" data-tab="inventory" onclick="switchRecordTab('inventory')">📋 Inventory</button>
+</div>
+
+<!-- MILK PRODUCTION SUBTAB -->
+<div class="record-subtab" id="records-milk">
+<div class="glass-card p-lg rounded-xl mb-lg">
+<h2 class="font-headline-md text-primary mb-md">Log Milk Production</h2>
+<form class="grid grid-cols-2 md:grid-cols-5 gap-md items-end" id="milk-form" onsubmit="addMilkRecord(event)">
+<div class="col-span-2 md:col-span-1">
+<label class="block font-label-lg mb-xs">Animal</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md" id="milk-animal" required></select>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Date</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="milk-date" required type="date"/>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Session</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md" id="milk-session">
+<option>AM</option>
+<option>PM</option>
+</select>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Liters</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="milk-liters" min="0" required step="0.1" type="number"/>
+</div>
+<button class="bg-secondary text-on-secondary py-md rounded-xl font-label-lg shadow-md" type="submit">Add Record</button>
+</form>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-lg" id="milk-monthly-summary"></div>
+
+<div class="glass-card p-lg rounded-xl overflow-x-auto">
+<h2 class="font-headline-md text-primary mb-md">Milk Log</h2>
+<table class="w-full text-left font-body-md">
+<thead>
+<tr class="border-b border-outline-variant text-on-surface-variant font-label-sm">
+<th class="py-sm pr-sm">Date</th><th class="py-sm pr-sm">Animal</th><th class="py-sm pr-sm">Session</th><th class="py-sm pr-sm">Liters</th>
+</tr>
+</thead>
+<tbody id="milk-table-body"></tbody>
+</table>
+</div>
+</div>
+
+<!-- BREEDING SUBTAB -->
+<div class="record-subtab" id="records-breeding" style="display:none">
+<div class="glass-card p-lg rounded-xl mb-lg">
+<h2 class="font-headline-md text-primary mb-md">Log Breeding Event</h2>
+<form class="grid grid-cols-2 md:grid-cols-5 gap-md items-end" id="breeding-form" onsubmit="addBreedingRecord(event)">
+<div class="col-span-2 md:col-span-1">
+<label class="block font-label-lg mb-xs">Animal</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md" id="breeding-animal" required></select>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Date</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="breeding-date" required type="date"/>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Event Type</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md" id="breeding-type">
+<option>Service/Insemination</option>
+<option>Pregnancy Check</option>
+<option>Calving</option>
+</select>
+</div>
+<div class="col-span-2 md:col-span-1">
+<label class="block font-label-lg mb-xs">Details</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="breeding-details" placeholder="e.g. Bull used, result, calf info"/>
+</div>
+<button class="bg-secondary text-on-secondary py-md rounded-xl font-label-lg shadow-md" type="submit">Add Record</button>
+</form>
+</div>
+<div class="glass-card p-lg rounded-xl overflow-x-auto">
+<h2 class="font-headline-md text-primary mb-md">Breeding Log</h2>
+<table class="w-full text-left font-body-md">
+<thead>
+<tr class="border-b border-outline-variant text-on-surface-variant font-label-sm">
+<th class="py-sm pr-sm">Date</th><th class="py-sm pr-sm">Animal</th><th class="py-sm pr-sm">Event</th><th class="py-sm pr-sm">Details</th>
+</tr>
+</thead>
+<tbody id="breeding-table-body"></tbody>
+</table>
+</div>
+</div>
+
+<!-- HEALTH SUBTAB -->
+<div class="record-subtab" id="records-health" style="display:none">
+<div class="glass-card p-lg rounded-xl mb-lg">
+<h2 class="font-headline-md text-primary mb-md">Log Health Record</h2>
+<form class="grid grid-cols-2 md:grid-cols-6 gap-md items-end" id="health-form" onsubmit="addHealthRecord(event)">
+<div class="col-span-2 md:col-span-1">
+<label class="block font-label-lg mb-xs">Animal</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md" id="health-animal" required></select>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Date</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="health-date" required type="date"/>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Type</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md" id="health-type">
+<option>Vaccination</option>
+<option>Treatment</option>
+<option>Vet Visit</option>
+<option>Deworming</option>
+<option>Illness</option>
+</select>
+</div>
+<div class="col-span-2 md:col-span-1">
+<label class="block font-label-lg mb-xs">Description</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="health-description" placeholder="e.g. LSD Booster"/>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Cost (KSh)</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="health-cost" min="0" type="number"/>
+</div>
+<button class="bg-secondary text-on-secondary py-md rounded-xl font-label-lg shadow-md" type="submit">Add Record</button>
+</form>
+</div>
+<div class="glass-card p-lg rounded-xl overflow-x-auto">
+<h2 class="font-headline-md text-primary mb-md">Health Log</h2>
+<table class="w-full text-left font-body-md">
+<thead>
+<tr class="border-b border-outline-variant text-on-surface-variant font-label-sm">
+<th class="py-sm pr-sm">Date</th><th class="py-sm pr-sm">Animal</th><th class="py-sm pr-sm">Type</th><th class="py-sm pr-sm">Description</th><th class="py-sm pr-sm">Cost</th>
+</tr>
+</thead>
+<tbody id="health-table-body"></tbody>
+</table>
+</div>
+</div>
+
+<!-- FEED SUBTAB -->
+<div class="record-subtab" id="records-feed" style="display:none">
+<div class="glass-card p-lg rounded-xl mb-lg">
+<h2 class="font-headline-md text-primary mb-md">Log Feed & Nutrition</h2>
+<form class="grid grid-cols-2 md:grid-cols-5 gap-md items-end" id="feed-form" onsubmit="addFeedRecord(event)">
+<div>
+<label class="block font-label-lg mb-xs">Date</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="feed-date" required type="date"/>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Feed Type</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="feed-type" placeholder="e.g. Napier, Dairy Meal" required/>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Quantity (Kg)</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="feed-quantity" min="0" required step="0.1" type="number"/>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Cost (KSh)</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="feed-cost" min="0" type="number"/>
+</div>
+<button class="bg-secondary text-on-secondary py-md rounded-xl font-label-lg shadow-md" type="submit">Add Record</button>
+</form>
+</div>
+<div class="glass-card p-lg rounded-xl overflow-x-auto">
+<h2 class="font-headline-md text-primary mb-md">Feed Log</h2>
+<table class="w-full text-left font-body-md">
+<thead>
+<tr class="border-b border-outline-variant text-on-surface-variant font-label-sm">
+<th class="py-sm pr-sm">Date</th><th class="py-sm pr-sm">Feed Type</th><th class="py-sm pr-sm">Quantity (Kg)</th><th class="py-sm pr-sm">Cost</th>
+</tr>
+</thead>
+<tbody id="feed-table-body"></tbody>
+</table>
+</div>
+</div>
+
+<!-- FINANCIAL SUBTAB -->
+<div class="record-subtab" id="records-financial" style="display:none">
+<div class="glass-card p-lg rounded-xl mb-lg">
+<h2 class="font-headline-md text-primary mb-md">Log Income / Expense</h2>
+<form class="grid grid-cols-2 md:grid-cols-5 gap-md items-end" id="financial-form" onsubmit="addFinancialRecord(event)">
+<div>
+<label class="block font-label-lg mb-xs">Date</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="financial-date" required type="date"/>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Type</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md" id="financial-type">
+<option>Income</option>
+<option>Expense</option>
+</select>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Category</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="financial-category" placeholder="e.g. Milk Sale, Feed" required/>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Amount (KSh)</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="financial-amount" min="0" required type="number"/>
+</div>
+<button class="bg-secondary text-on-secondary py-md rounded-xl font-label-lg shadow-md" type="submit">Add Record</button>
+</form>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-lg" id="financial-summary"></div>
+
+<div class="glass-card p-lg rounded-xl overflow-x-auto">
+<h2 class="font-headline-md text-primary mb-md">Financial Log</h2>
+<table class="w-full text-left font-body-md">
+<thead>
+<tr class="border-b border-outline-variant text-on-surface-variant font-label-sm">
+<th class="py-sm pr-sm">Date</th><th class="py-sm pr-sm">Type</th><th class="py-sm pr-sm">Category</th><th class="py-sm pr-sm">Amount</th>
+</tr>
+</thead>
+<tbody id="financial-table-body"></tbody>
+</table>
+</div>
+</div>
+
+<!-- INVENTORY SUBTAB -->
+<div class="record-subtab" id="records-inventory" style="display:none">
+<div class="glass-card p-lg rounded-xl overflow-x-auto">
+<h2 class="font-headline-md text-primary mb-md">Animal Inventory Register</h2>
+<table class="w-full text-left font-body-md">
+<thead>
+<tr class="border-b border-outline-variant text-on-surface-variant font-label-sm">
+<th class="py-sm pr-sm">Tag</th><th class="py-sm pr-sm">Name</th><th class="py-sm pr-sm">Breed</th><th class="py-sm pr-sm">Type</th><th class="py-sm pr-sm">Purpose</th><th class="py-sm pr-sm">Status</th><th class="py-sm pr-sm">Weight (Kg)</th>
+</tr>
+</thead>
+<tbody id="inventory-table-body"></tbody>
+</table>
+</div>
+</div>
+
 </section>
 <!-- ADD ANIMAL PAGE -->
 <section class="page-transition hidden-page" id="page-add">
@@ -396,6 +643,10 @@
 <span class="material-symbols-outlined" data-icon="medical_services">medical_services</span>
 <span>Dalili</span>
 </button>
+<button class="nav-item-mobile flex flex-col items-center justify-center text-on-surface-variant font-label-sm transition-colors" data-nav="records" onclick="navigateTo('records')">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+<span>Kumbukumbu</span>
+</button>
 </nav>
 <!-- Modal for Animal Profile -->
 <div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] hidden items-center justify-center p-md" id="profile-modal">
@@ -430,7 +681,7 @@
 </div>
 <div class="flex justify-between border-b border-outline-variant pb-xs">
 <span class="font-label-lg">Last Calving</span>
-<span class="font-body-md">Mar 12, 2024</span>
+<span class="font-body-md">July 18, 2026</span>
 </div>
 </div>
 </div>
@@ -443,12 +694,12 @@
 <script>
     // --- State Management ---
     const herd = [
-        { id: 1, name: 'Bessie', tag: '#101', breed: 'Friesian', purpose: 'Dairy', status: 'Healthy', statusType: 'success', vaccination: 'LSD Booster (Scheduled: 2023-11-20)' },
-        { id: 2, name: 'Daisy', tag: '#102', breed: 'Ayrshire', purpose: 'Dairy', status: 'Heat Alert', statusType: 'error', vaccination: 'FMD (Completed: 2023-08-15)' },
-        { id: 3, name: 'Mama Ng\'ombe', tag: '#103', breed: 'Boran', purpose: 'Dairy', status: 'Sick', statusType: 'error', vaccination: 'Anthrax (Due: 2023-12-05)' },
-        { id: 4, name: 'Juma', tag: '#104', breed: 'Jersey', purpose: 'Breeding', status: 'Healthy', statusType: 'success', vaccination: 'None' },
-        { id: 5, name: 'Baraka', tag: '#105', breed: 'Friesian', purpose: 'Beef', status: 'Healthy', statusType: 'success', vaccination: 'Brucellosis (Completed: 2023-09-10)' },
-        { id: 6, name: 'Tamu', tag: '#106', breed: 'Ayrshire', purpose: 'Dairy', status: 'Pregnant', statusType: 'primary', vaccination: 'LSD (Scheduled: 2023-11-25)' }
+        { id: 1, name: 'Bessie', tag: '#101', breed: 'Friesian', type: 'Cow', purpose: 'Dairy', status: 'Healthy', statusType: 'success', vaccination: 'LSD Booster (Scheduled: 2023-11-20)', weight: 480 },
+        { id: 2, name: 'Daisy', tag: '#102', breed: 'Ayrshire', type: 'Cow', purpose: 'Dairy', status: 'Heat Alert', statusType: 'error', vaccination: 'FMD (Completed: 2023-08-15)', weight: 455 },
+        { id: 3, name: 'Nyota', tag: '#103', breed: 'Boran', type: 'Cow', purpose: 'Dairy', status: 'Sick', statusType: 'error', vaccination: 'Anthrax (Due: 2023-12-05)', weight: 470 },
+        { id: 4, name: 'Juma', tag: '#104', breed: 'Jersey', type: 'Bull', purpose: 'Breeding', status: 'Healthy', statusType: 'success', vaccination: 'None', weight: 610 },
+        { id: 5, name: 'Baraka', tag: '#105', breed: 'Friesian', type: 'Heifer', purpose: 'Beef', status: 'Healthy', statusType: 'success', vaccination: 'Brucellosis (Completed: 2023-09-10)', weight: 320 },
+        { id: 6, name: 'Tamu', tag: '#106', breed: 'Ayrshire', type: 'Cow', purpose: 'Dairy', status: 'Pregnant', statusType: 'primary', vaccination: 'LSD (Scheduled: 2023-11-25)', weight: 460 }
     ];
 
     const oestrusSigns = [
@@ -472,9 +723,56 @@
         { name: 'Milk Fever', symptoms: ['Dullness', 'Loss of Appetite', 'Limping'], action: 'Calcium Supplement', color: 'primary' }
     ];
 
+    // --- Farm Records State ---
+    let milkRecords = [
+        { id: 1, animalId: 1, date: '2026-06-01', session: 'AM', liters: 12 },
+        { id: 2, animalId: 1, date: '2026-06-01', session: 'PM', liters: 9 },
+        { id: 3, animalId: 2, date: '2026-06-01', session: 'AM', liters: 10 }
+    ];
+    let breedingRecords = [
+        { id: 1, animalId: 2, date: '2026-05-20', type: 'Service/Insemination', details: 'AI - Friesian semen batch #22' },
+        { id: 2, animalId: 6, date: '2026-04-10', type: 'Pregnancy Check', details: 'Confirmed pregnant, ~5 months' }
+    ];
+    let healthRecords = [
+        { id: 1, animalId: 1, date: '2023-11-20', type: 'Vaccination', description: 'LSD Booster', cost: 500 },
+        { id: 2, animalId: 3, date: '2026-06-02', type: 'Illness', description: 'Suspected mastitis, reduced yield', cost: 1200 }
+    ];
+    let feedRecords = [
+        { id: 1, date: '2026-06-01', feedType: 'Napier Grass', quantity: 150, cost: 0 },
+        { id: 2, date: '2026-06-01', feedType: 'Dairy Meal', quantity: 20, cost: 1400 }
+    ];
+    let financialRecords = [
+        { id: 1, date: '2026-06-01', type: 'Income', category: 'Milk Sale', amount: 4200 },
+        { id: 2, date: '2026-06-01', type: 'Expense', category: 'Dairy Meal', amount: 1400 }
+    ];
+    let recordIdCounter = 1000;
+    let activeRecordTab = 'milk';
+
+    function todayStr() {
+        return new Date().toISOString().split('T')[0];
+    }
+
+    function animalName(id) {
+        const a = herd.find(c => c.id === Number(id));
+        return a ? a.name : 'Unknown';
+    }
+
+    function formatKsh(n) {
+        return 'KSh ' + Number(n || 0).toLocaleString();
+    }
+
+    function populateAnimalSelects() {
+        const selects = ['milk-animal', 'breeding-animal', 'health-animal'];
+        selects.forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.innerHTML = herd.map(a => `<option value="${a.id}">${a.name} (${a.tag})</option>`).join('');
+        });
+    }
+
     // --- Navigation ---
     function navigateTo(pageId) {
-        const pages = ['dashboard', 'herd', 'oestrus', 'symptoms', 'add'];
+        const pages = ['dashboard', 'herd', 'oestrus', 'symptoms', 'records', 'add'];
         pages.forEach(p => {
             const el = document.getElementById(`page-${p}`);
             if (p === pageId) {
@@ -504,6 +802,10 @@
         
         // Re-render Herd if needed
         if (pageId === 'herd') renderHerd();
+        if (pageId === 'records') {
+            populateAnimalSelects();
+            switchRecordTab(activeRecordTab);
+        }
     }
 
     // --- Renderers ---
@@ -608,6 +910,225 @@
         `).join('');
     }
 
+    // --- Farm Records Logic ---
+    function switchRecordTab(tab) {
+        activeRecordTab = tab;
+        document.querySelectorAll('.record-subtab').forEach(el => el.style.display = 'none');
+        document.getElementById(`records-${tab}`).style.display = 'block';
+        document.querySelectorAll('.records-tab-btn').forEach(btn => {
+            const isActive = btn.dataset.tab === tab;
+            btn.className = isActive
+                ? 'records-tab-btn whitespace-nowrap px-md py-sm rounded-xl font-label-lg transition-all bg-primary text-on-primary shadow-md'
+                : 'records-tab-btn whitespace-nowrap px-md py-sm rounded-xl font-label-lg transition-all bg-surface-container-lowest text-on-surface-variant border border-outline-variant';
+        });
+
+        if (tab === 'milk') { document.getElementById('milk-date').value = todayStr(); renderMilkRecords(); }
+        if (tab === 'breeding') { document.getElementById('breeding-date').value = todayStr(); renderBreedingRecords(); }
+        if (tab === 'health') { document.getElementById('health-date').value = todayStr(); renderHealthRecords(); }
+        if (tab === 'feed') { document.getElementById('feed-date').value = todayStr(); renderFeedRecords(); }
+        if (tab === 'financial') { document.getElementById('financial-date').value = todayStr(); renderFinancialRecords(); }
+        if (tab === 'inventory') { renderInventory(); }
+    }
+
+    // Milk
+    function addMilkRecord(e) {
+        e.preventDefault();
+        milkRecords.push({
+            id: ++recordIdCounter,
+            animalId: Number(document.getElementById('milk-animal').value),
+            date: document.getElementById('milk-date').value,
+            session: document.getElementById('milk-session').value,
+            liters: Number(document.getElementById('milk-liters').value)
+        });
+        e.target.reset();
+        document.getElementById('milk-date').value = todayStr();
+        renderMilkRecords();
+        showToast('Milk record added.');
+    }
+
+    function renderMilkRecords() {
+        const rows = [...milkRecords].sort((a,b) => b.date.localeCompare(a.date));
+        document.getElementById('milk-table-body').innerHTML = rows.map(r => `
+            <tr class="border-b border-outline-variant">
+                <td class="py-sm pr-sm">${r.date}</td>
+                <td class="py-sm pr-sm">${animalName(r.animalId)}</td>
+                <td class="py-sm pr-sm">${r.session}</td>
+                <td class="py-sm pr-sm">${r.liters} L</td>
+            </tr>
+        `).join('') || `<tr><td colspan="4" class="py-md text-on-surface-variant italic">No milk records yet.</td></tr>`;
+
+        // Monthly summary per animal
+        const monthTotals = {};
+        milkRecords.forEach(r => {
+            const month = r.date.slice(0, 7);
+            if (!monthTotals[month]) monthTotals[month] = { total: 0, byAnimal: {} };
+            monthTotals[month].total += r.liters;
+            monthTotals[month].byAnimal[r.animalId] = (monthTotals[month].byAnimal[r.animalId] || 0) + r.liters;
+        });
+        const months = Object.keys(monthTotals).sort().reverse();
+        const summaryEl = document.getElementById('milk-monthly-summary');
+        if (months.length === 0) {
+            summaryEl.innerHTML = '';
+            return;
+        }
+        summaryEl.innerHTML = months.slice(0, 3).map(m => {
+            const data = monthTotals[m];
+            const topAnimal = Object.entries(data.byAnimal).sort((a,b) => b[1]-a[1])[0];
+            return `
+            <div class="glass-card p-md rounded-xl">
+                <span class="text-label-sm text-on-surface-variant">${m} Total</span>
+                <div class="text-headline-lg font-bold text-primary">${data.total.toFixed(1)} L</div>
+                <div class="text-label-sm text-on-surface-variant mt-xs">Top: ${animalName(topAnimal[0])} (${topAnimal[1].toFixed(1)} L)</div>
+            </div>`;
+        }).join('');
+    }
+
+    // Breeding
+    function addBreedingRecord(e) {
+        e.preventDefault();
+        breedingRecords.push({
+            id: ++recordIdCounter,
+            animalId: Number(document.getElementById('breeding-animal').value),
+            date: document.getElementById('breeding-date').value,
+            type: document.getElementById('breeding-type').value,
+            details: document.getElementById('breeding-details').value
+        });
+        e.target.reset();
+        document.getElementById('breeding-date').value = todayStr();
+        renderBreedingRecords();
+        showToast('Breeding record added.');
+    }
+
+    function renderBreedingRecords() {
+        const rows = [...breedingRecords].sort((a,b) => b.date.localeCompare(a.date));
+        document.getElementById('breeding-table-body').innerHTML = rows.map(r => `
+            <tr class="border-b border-outline-variant">
+                <td class="py-sm pr-sm">${r.date}</td>
+                <td class="py-sm pr-sm">${animalName(r.animalId)}</td>
+                <td class="py-sm pr-sm">${r.type}</td>
+                <td class="py-sm pr-sm">${r.details || '-'}</td>
+            </tr>
+        `).join('') || `<tr><td colspan="4" class="py-md text-on-surface-variant italic">No breeding records yet.</td></tr>`;
+    }
+
+    // Health
+    function addHealthRecord(e) {
+        e.preventDefault();
+        healthRecords.push({
+            id: ++recordIdCounter,
+            animalId: Number(document.getElementById('health-animal').value),
+            date: document.getElementById('health-date').value,
+            type: document.getElementById('health-type').value,
+            description: document.getElementById('health-description').value,
+            cost: Number(document.getElementById('health-cost').value || 0)
+        });
+        e.target.reset();
+        document.getElementById('health-date').value = todayStr();
+        renderHealthRecords();
+        showToast('Health record added.');
+    }
+
+    function renderHealthRecords() {
+        const rows = [...healthRecords].sort((a,b) => b.date.localeCompare(a.date));
+        document.getElementById('health-table-body').innerHTML = rows.map(r => `
+            <tr class="border-b border-outline-variant">
+                <td class="py-sm pr-sm">${r.date}</td>
+                <td class="py-sm pr-sm">${animalName(r.animalId)}</td>
+                <td class="py-sm pr-sm">${r.type}</td>
+                <td class="py-sm pr-sm">${r.description || '-'}</td>
+                <td class="py-sm pr-sm">${formatKsh(r.cost)}</td>
+            </tr>
+        `).join('') || `<tr><td colspan="5" class="py-md text-on-surface-variant italic">No health records yet.</td></tr>`;
+    }
+
+    // Feed
+    function addFeedRecord(e) {
+        e.preventDefault();
+        feedRecords.push({
+            id: ++recordIdCounter,
+            date: document.getElementById('feed-date').value,
+            feedType: document.getElementById('feed-type').value,
+            quantity: Number(document.getElementById('feed-quantity').value),
+            cost: Number(document.getElementById('feed-cost').value || 0)
+        });
+        e.target.reset();
+        document.getElementById('feed-date').value = todayStr();
+        renderFeedRecords();
+        showToast('Feed record added.');
+    }
+
+    function renderFeedRecords() {
+        const rows = [...feedRecords].sort((a,b) => b.date.localeCompare(a.date));
+        document.getElementById('feed-table-body').innerHTML = rows.map(r => `
+            <tr class="border-b border-outline-variant">
+                <td class="py-sm pr-sm">${r.date}</td>
+                <td class="py-sm pr-sm">${r.feedType}</td>
+                <td class="py-sm pr-sm">${r.quantity} kg</td>
+                <td class="py-sm pr-sm">${formatKsh(r.cost)}</td>
+            </tr>
+        `).join('') || `<tr><td colspan="4" class="py-md text-on-surface-variant italic">No feed records yet.</td></tr>`;
+    }
+
+    // Financial
+    function addFinancialRecord(e) {
+        e.preventDefault();
+        financialRecords.push({
+            id: ++recordIdCounter,
+            date: document.getElementById('financial-date').value,
+            type: document.getElementById('financial-type').value,
+            category: document.getElementById('financial-category').value,
+            amount: Number(document.getElementById('financial-amount').value)
+        });
+        e.target.reset();
+        document.getElementById('financial-date').value = todayStr();
+        renderFinancialRecords();
+        updateDashboardFinancials();
+        showToast('Financial record added.');
+    }
+
+    function renderFinancialRecords() {
+        const rows = [...financialRecords].sort((a,b) => b.date.localeCompare(a.date));
+        document.getElementById('financial-table-body').innerHTML = rows.map(r => `
+            <tr class="border-b border-outline-variant">
+                <td class="py-sm pr-sm">${r.date}</td>
+                <td class="py-sm pr-sm">${r.type}</td>
+                <td class="py-sm pr-sm">${r.category}</td>
+                <td class="py-sm pr-sm ${r.type === 'Income' ? 'text-secondary' : 'text-error'}">${formatKsh(r.amount)}</td>
+            </tr>
+        `).join('') || `<tr><td colspan="4" class="py-md text-on-surface-variant italic">No financial records yet.</td></tr>`;
+
+        const income = financialRecords.filter(r => r.type === 'Income').reduce((s,r) => s + r.amount, 0);
+        const expense = financialRecords.filter(r => r.type === 'Expense').reduce((s,r) => s + r.amount, 0);
+        document.getElementById('financial-summary').innerHTML = `
+            <div class="glass-card p-md rounded-xl"><span class="text-label-sm text-on-surface-variant">Total Income</span><div class="text-headline-lg font-bold text-secondary">${formatKsh(income)}</div></div>
+            <div class="glass-card p-md rounded-xl"><span class="text-label-sm text-on-surface-variant">Total Expenses</span><div class="text-headline-lg font-bold text-error">${formatKsh(expense)}</div></div>
+            <div class="glass-card p-md rounded-xl"><span class="text-label-sm text-on-surface-variant">Net Profit</span><div class="text-headline-lg font-bold text-primary">${formatKsh(income - expense)}</div></div>
+        `;
+    }
+
+    function updateDashboardFinancials() {
+        const income = financialRecords.filter(r => r.type === 'Income').reduce((s,r) => s + r.amount, 0);
+        const expense = financialRecords.filter(r => r.type === 'Expense').reduce((s,r) => s + r.amount, 0);
+        document.getElementById('dash-revenue').innerText = formatKsh(income);
+        document.getElementById('dash-expenses').innerText = formatKsh(expense);
+        document.getElementById('dash-profit').innerText = formatKsh(income - expense);
+    }
+
+    // Inventory
+    function renderInventory() {
+        document.getElementById('inventory-table-body').innerHTML = herd.map(a => `
+            <tr class="border-b border-outline-variant">
+                <td class="py-sm pr-sm">${a.tag}</td>
+                <td class="py-sm pr-sm">${a.name}</td>
+                <td class="py-sm pr-sm">${a.breed}</td>
+                <td class="py-sm pr-sm">${a.type || '-'}</td>
+                <td class="py-sm pr-sm">${a.purpose}</td>
+                <td class="py-sm pr-sm"><span class="px-sm py-xs rounded-lg font-label-sm ${getStatusClass(a.statusType)}">${a.status}</span></td>
+                <td class="py-sm pr-sm">${a.weight ? a.weight + ' kg' : '-'}</td>
+            </tr>
+        `).join('');
+    }
+
     function exportToCSV() {
         const summaryData = [
             ["FARM SUMMARY REPORT"],
@@ -628,6 +1149,31 @@
                 `"${animal.vaccination}"`
             ]);
         });
+
+        summaryData.push([""]);
+        summaryData.push(["MILK PRODUCTION RECORDS"]);
+        summaryData.push(["Date", "Animal", "Session", "Liters"]);
+        milkRecords.forEach(r => summaryData.push([r.date, animalName(r.animalId), r.session, r.liters]));
+
+        summaryData.push([""]);
+        summaryData.push(["BREEDING RECORDS"]);
+        summaryData.push(["Date", "Animal", "Event", "Details"]);
+        breedingRecords.forEach(r => summaryData.push([r.date, animalName(r.animalId), `"${r.type}"`, `"${r.details || ''}"`]));
+
+        summaryData.push([""]);
+        summaryData.push(["HEALTH RECORDS"]);
+        summaryData.push(["Date", "Animal", "Type", "Description", "Cost"]);
+        healthRecords.forEach(r => summaryData.push([r.date, animalName(r.animalId), r.type, `"${r.description || ''}"`, r.cost]));
+
+        summaryData.push([""]);
+        summaryData.push(["FEED RECORDS"]);
+        summaryData.push(["Date", "Feed Type", "Quantity (Kg)", "Cost"]);
+        feedRecords.forEach(r => summaryData.push([r.date, `"${r.feedType}"`, r.quantity, r.cost]));
+
+        summaryData.push([""]);
+        summaryData.push(["FINANCIAL RECORDS"]);
+        summaryData.push(["Date", "Type", "Category", "Amount"]);
+        financialRecords.forEach(r => summaryData.push([r.date, r.type, `"${r.category}"`, r.amount]));
 
         const csvString = summaryData.map(row => row.join(",")).join("\n");
         const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
@@ -687,6 +1233,8 @@
     document.addEventListener('DOMContentLoaded', () => {
         initOestrus();
         initSymptoms();
+        populateAnimalSelects();
+        updateDashboardFinancials();
         navigateTo('dashboard');
     });
 </script>
