@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html class="light" lang="sw"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Heat - Cattle Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#00254d",
+                        "inverse-primary": "#a7c8ff",
+                        "primary-fixed": "#d5e3ff",
+                        "tertiary-fixed": "#e0e3e5",
+                        "on-tertiary-fixed": "#181c1e",
+                        "secondary-fixed": "#a4f4b6",
+                        "on-primary-fixed-variant": "#1f477b",
+                        "primary-fixed-dim": "#a7c8ff",
+                        "surface": "#f9f9ff",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#c4c7c9",
+                        "background": "#f9f9ff",
+                        "on-tertiary-fixed-variant": "#434749",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-container": "#82a6e0",
+                        "surface-container-high": "#dee8ff",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#ebf1ff",
+                        "on-primary-fixed": "#001b3b",
+                        "primary-container": "#0d3b6e",
+                        "on-surface": "#111c2c",
+                        "on-secondary-fixed-variant": "#005228",
+                        "surface-container-low": "#f0f3ff",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#111c2c",
+                        "on-tertiary-container": "#a1a5a7",
+                        "secondary": "#1b6c3b",
+                        "surface-tint": "#3a5f94",
+                        "outline-variant": "#c3c6d1",
+                        "on-secondary-fixed": "#00210c",
+                        "secondary-fixed-dim": "#89d89c",
+                        "secondary-container": "#a2f2b3",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#e7eeff",
+                        "error-container": "#ffdad6",
+                        "on-primary": "#ffffff",
+                        "outline": "#737780",
+                        "surface-dim": "#cfdaf1",
+                        "on-surface-variant": "#43474f",
+                        "surface-variant": "#d8e3fa",
+                        "on-secondary-container": "#21703f",
+                        "inverse-surface": "#263142",
+                        "surface-bright": "#f9f9ff",
+                        "tertiary-container": "#373b3d",
+                        "surface-container-highest": "#d8e3fa",
+                        "tertiary": "#212527"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1200px",
+                        "gutter": "16px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "xl": "40px",
+                        "md": "16px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "label-sm": ["Hanken Grotesk"],
+                        "body-md": ["Hanken Grotesk"],
+                        "label-lg": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Hanken Grotesk', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+        .page-transition { transition: opacity 0.3s ease-in-out, transform 0.3s ease-out; }
+        .hidden-page { display: none; opacity: 0; transform: translateY(10px); }
+        .active-page { display: block; opacity: 1; transform: translateY(0); }
+        .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.6); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05); }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+
+<!-- ============================= -->
+<!-- LOGIN / REGISTER PAGE         -->
+<!-- Shown until a valid session is established; hidden once logged in. -->
+<!-- ============================= -->
+<div class="fixed inset-0 z-[200] bg-background flex items-center justify-center p-md" id="auth-page">
+  <div class="w-full max-w-md">
+    <div class="flex items-center gap-sm justify-center mb-lg">
+      <span class="material-symbols-outlined text-primary text-4xl" data-icon="pets">pets</span>
+      <span class="font-display-lg text-display-lg text-primary">Heat</span>
+    </div>
+
+    <div class="glass-card bg-surface-container-lowest p-lg rounded-xl">
+      <div class="flex border-b border-outline-variant mb-lg">
+        <button class="auth-tab-btn flex-1 py-md font-bold border-b-2 border-primary text-primary" data-tab="login" onclick="switchAuthTab('login')">Log In</button>
+        <button class="auth-tab-btn flex-1 py-md text-on-surface-variant" data-tab="register" onclick="switchAuthTab('register')">Register</button>
+      </div>
+
+      <div class="mb-md hidden p-md rounded-xl bg-error-container text-on-error-container font-label-lg" id="auth-error"></div>
+
+      <!-- Login form -->
+      <form class="space-y-md" id="login-form" onsubmit="handleLogin(event)">
+        <div>
+          <label class="block font-label-lg mb-xs">Email</label>
+          <input class="w-full bg-surface border border-outline rounded-xl p-md" id="login-email" required type="email"/>
+        </div>
+        <div>
+          <label class="block font-label-lg mb-xs">Password</label>
+          <input class="w-full bg-surface border border-outline rounded-xl p-md" id="login-password" required type="password"/>
+        </div>
+        <button class="w-full bg-primary text-on-primary py-md rounded-xl font-headline-md shadow-md" id="login-submit-btn" type="submit">Log In</button>
+        <p class="text-center text-label-sm text-on-surface-variant">Demo login: demo@heatapp.com / Password123!</p>
+      </form>
+
+      <!-- Register form -->
+      <form class="space-y-md hidden" id="register-form" onsubmit="handleRegister(event)">
+        <div>
+          <label class="block font-label-lg mb-xs">Full Name</label>
+          <input class="w-full bg-surface border border-outline rounded-xl p-md" id="register-name" required type="text"/>
+        </div>
+        <div>
+          <label class="block font-label-lg mb-xs">Farm Name (optional)</label>
+          <input class="w-full bg-surface border border-outline rounded-xl p-md" id="register-farm" type="text"/>
+        </div>
+        <div>
+          <label class="block font-label-lg mb-xs">Email</label>
+          <input class="w-full bg-surface border border-outline rounded-xl p-md" id="register-email" required type="email"/>
+        </div>
+        <div>
+          <label class="block font-label-lg mb-xs">Password</label>
+          <input class="w-full bg-surface border border-outline rounded-xl p-md" id="register-password" required type="password"/>
+          <p class="text-label-sm text-on-surface-variant mt-xs">8+ chars, one uppercase letter, one number.</p>
+        </div>
+        <button class="w-full bg-secondary text-on-secondary py-md rounded-xl font-headline-md shadow-md" id="register-submit-btn" type="submit">Create Account</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ============================= -->
+<!-- MAIN APP (hidden until authenticated) -->
+<!-- ============================= -->
+<div class="hidden" id="app-shell">
+
+<!-- Top App Bar -->
+<header class="bg-surface border-b border-outline-variant fixed top-0 w-full z-50 px-md h-16 flex justify-between items-center max-w-container-max mx-auto left-0 right-0">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="pets">pets</span>
+<span class="font-display-lg text-display-lg text-primary">Heat</span>
+</div>
+<div class="flex items-center gap-md">
+<button class="flex items-center gap-xs text-primary font-bold hover:bg-surface-container-low transition-colors px-md py-sm rounded-xl" onclick="exportToCSV()">
+<span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
+<span class="hidden md:inline">Shamba Summary</span>
+</button>
+<button class="flex items-center gap-xs text-on-surface-variant hover:text-error font-label-lg px-md py-sm rounded-xl" onclick="handleLogout()">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="hidden md:inline">Logout</span>
+</button>
+</div>
+</header>
+<!-- Navigation Drawer (Desktop) -->
+<aside class="hidden md:flex flex-col fixed left-0 top-0 h-full w-60 z-40 bg-primary text-on-primary shadow-md">
+<div class="p-lg mt-16">
+<h2 class="font-headline-lg text-headline-lg mb-lg">Heat Management</h2>
+<nav class="space-y-sm">
+<button class="nav-item-desktop w-full flex items-center gap-md px-4 py-3 text-on-primary-fixed-variant hover:bg-primary-fixed-dim hover:text-on-primary-fixed rounded-r-full transition-all" data-nav="dashboard" onclick="navigateTo('dashboard')">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-lg text-label-lg">Dashboard</span>
+</button>
+<button class="nav-item-desktop w-full flex items-center gap-md px-4 py-3 text-on-primary-fixed-variant hover:bg-primary-fixed-dim hover:text-on-primary-fixed rounded-r-full transition-all" data-nav="herd" onclick="navigateTo('herd')">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-lg text-label-lg">My Herd</span>
+</button>
+<button class="nav-item-desktop w-full flex items-center gap-md px-4 py-3 text-on-primary-fixed-variant hover:bg-primary-fixed-dim hover:text-on-primary-fixed rounded-r-full transition-all" data-nav="oestrus" onclick="navigateTo('oestrus')">
+<span class="material-symbols-outlined" data-icon="heat_pump">heat_pump</span>
+<span class="font-label-lg text-label-lg">Oestrus</span>
+</button>
+<button class="nav-item-desktop w-full flex items-center gap-md px-4 py-3 text-on-primary-fixed-variant hover:bg-primary-fixed-dim hover:text-on-primary-fixed rounded-r-full transition-all" data-nav="symptoms" onclick="navigateTo('symptoms')">
+<span class="material-symbols-outlined" data-icon="medical_services">medical_services</span>
+<span class="font-label-lg text-label-lg">Symptoms</span>
+</button>
+<button class="nav-item-desktop w-full flex items-center gap-md px-4 py-3 text-on-primary-fixed-variant hover:bg-primary-fixed-dim hover:text-on-primary-fixed rounded-r-full transition-all" data-nav="records" onclick="navigateTo('records')">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+<span class="font-label-lg text-label-lg">Farm Records</span>
+</button>
+<button class="nav-item-desktop w-full flex items-center gap-md px-4 py-3 text-on-primary-fixed-variant hover:bg-primary-fixed-dim hover:text-on-primary-fixed rounded-r-full transition-all" data-nav="add" onclick="navigateTo('add')">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-label-lg text-label-lg">Add Animal</span>
+</button>
+</nav>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-60 pt-20 pb-24 px-md md:px-lg max-w-5xl mx-auto min-h-screen">
+<!-- DASHBOARD PAGE -->
+<section class="page-transition active-page" id="page-dashboard">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-primary mb-md">Habari za Leo (Shamba Summary)</h1>
+<!-- Summary Stats Bento -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-md mb-lg">
+<div class="glass-card bg-surface-container-lowest p-md rounded-xl flex flex-col justify-center">
+<span class="text-on-surface-variant font-label-sm">Total Animals</span>
+<span class="text-display-lg font-display-lg text-primary" id="stat-total">0</span>
+</div>
+<div class="glass-card bg-primary-container text-white p-md rounded-xl flex flex-col justify-center">
+<span class="font-label-sm">Total Cows</span>
+<span class="text-display-lg font-display-lg" id="stat-cows">0</span>
+</div>
+<div class="glass-card bg-secondary-container text-on-secondary-container p-md rounded-xl flex flex-col justify-center">
+<span class="font-label-sm">Active Bulls</span>
+<span class="text-display-lg font-display-lg" id="stat-bulls">0</span>
+</div>
+<div class="glass-card bg-error-container text-on-error-container p-md rounded-xl flex flex-col justify-center">
+<span class="font-label-sm">Alerts</span>
+<span class="text-display-lg font-display-lg" id="stat-alerts">0</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg mb-lg">
+<!-- Milk Yield Section -->
+<div class="md:col-span-2 glass-card bg-surface-container-lowest p-lg rounded-xl">
+<div class="flex justify-between items-center mb-md">
+<h2 class="font-headline-md text-primary">Mavuno ya Maziwa (Yield)</h2>
+<div class="flex gap-xs items-center text-secondary font-label-lg">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+                        Last 7 entries
+                    </div>
+</div>
+<div class="relative h-44 w-full mb-lg">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 700 160">
+<defs>
+<lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="5%" stop-color="#1b6c3b" stop-opacity="0.3"></stop>
+<stop offset="95%" stop-color="#1b6c3b" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M 0 130 Q 50 120 100 110 Q 150 100 200 115 Q 250 130 300 95 Q 350 60 400 80 Q 450 100 500 70 Q 550 40 600 55 Q 650 70 700 65 V 160 H 0 Z" fill="url(#chartGradient)"></path>
+<path d="M 0 130 Q 50 120 100 110 Q 150 100 200 115 Q 250 130 300 95 Q 350 60 400 80 Q 450 100 500 70 Q 550 40 600 55 Q 650 70 700 65" fill="none" stroke="#1b6c3b" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<div class="flex justify-between mt-sm" id="milk-trend-labels">
+<span class="text-label-sm text-on-surface-variant">-</span>
+</div>
+</div>
+</div>
+<!-- Shamba Financials -->
+<div class="md:col-span-1 glass-card bg-surface-container-lowest p-lg rounded-xl flex flex-col">
+<h2 class="font-headline-md text-primary mb-md">Fedha za Shamba</h2>
+<div class="space-y-md flex-1 flex flex-col justify-center">
+<div class="p-md rounded-xl bg-surface-container border border-outline-variant">
+<span class="text-label-sm text-on-surface-variant">Mapato (Revenue)</span>
+<div class="text-headline-lg font-bold text-secondary" id="dash-revenue">KSh 0</div>
+</div>
+<div class="p-md rounded-xl bg-surface-container border border-outline-variant">
+<span class="text-label-sm text-on-surface-variant">Gharama (Expenses)</span>
+<div class="text-headline-lg font-bold text-error" id="dash-expenses">KSh 0</div>
+</div>
+<div class="pt-sm border-t border-outline-variant flex justify-between items-center">
+<span class="font-label-lg">Net Profit</span>
+<span class="font-headline-md text-primary" id="dash-profit">KSh 0</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Actions -->
+<div class="flex flex-wrap gap-sm mb-lg">
+<button class="flex-1 min-w-[140px] bg-primary text-on-primary py-3 px-4 rounded-xl font-label-lg flex items-center justify-center gap-xs shadow-md" onclick="navigateTo('oestrus')">
+<span class="material-symbols-outlined" data-icon="monitor_heart">monitor_heart</span> Log Signs
+            </button>
+<button class="flex-1 min-w-[140px] bg-secondary text-on-secondary py-3 px-4 rounded-xl font-label-lg flex items-center justify-center gap-xs shadow-md" onclick="navigateTo('add')">
+<span class="material-symbols-outlined" data-icon="add">add</span> Add Animal
+            </button>
+<button class="flex-1 min-w-[140px] border border-primary text-primary py-3 px-4 rounded-xl font-label-lg flex items-center justify-center gap-xs shadow-sm bg-white" onclick="navigateTo('symptoms')">
+<span class="material-symbols-outlined" data-icon="stethoscope">stethoscope</span> Symptoms
+            </button>
+<button class="flex-1 min-w-[140px] border border-primary text-primary py-3 px-4 rounded-xl font-label-lg flex items-center justify-center gap-xs shadow-sm bg-white" onclick="navigateTo('records')">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span> Farm Records
+            </button>
+</div>
+<!-- Urgent Alerts -->
+<h2 class="font-headline-md text-headline-md text-on-surface mb-md">Onyo ya Haraka (Urgent Alerts)</h2>
+<div class="space-y-md" id="dashboard-alerts">
+<p class="text-on-surface-variant italic">No alerts right now.</p>
+</div>
+</section>
+<!-- MY HERD PAGE -->
+<section class="page-transition hidden-page" id="page-herd">
+<div class="flex justify-between items-center mb-lg">
+<h1 class="font-headline-lg text-primary">Mifugo Yangu (My Herd)</h1>
+<div class="bg-surface-container-high rounded-full px-md py-xs flex items-center gap-xs text-primary font-label-lg" id="herd-count-badge">
+                0 Total
+            </div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md" id="herd-container">
+<!-- Cards injected via JS -->
+</div>
+</section>
+<!-- OESTRUS CHECKER PAGE -->
+<section class="page-transition hidden-page" id="page-oestrus">
+<h1 class="font-headline-lg text-primary mb-lg">Oestrus Checker (Uchambuzi wa Joto)</h1>
+<div class="glass-card p-lg rounded-xl">
+<div class="mb-md">
+<label class="block font-label-lg mb-xs text-on-surface">Select Cow</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md text-body-md outline-none focus:border-primary transition-all" id="oestrus-cow-select">
+</select>
+</div>
+<p class="text-on-surface-variant font-body-md mb-md">Select all visible signs observed in the last 12 hours:</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-sm mb-lg" id="oestrus-signs">
+<!-- JS loop for signs -->
+</div>
+<div class="hidden mb-lg p-md rounded-xl text-center" id="oestrus-result">
+<!-- Result injected here -->
+</div>
+<div class="flex gap-md">
+<button class="flex-1 bg-primary text-on-primary py-lg rounded-xl font-label-lg hover:opacity-90 transition-opacity shadow-md" onclick="analyzeOestrus()">Analyze Signs</button>
+<button class="flex-1 bg-secondary text-on-secondary py-lg rounded-xl font-label-lg hover:opacity-90 transition-opacity shadow-md" onclick="logOestrus()">Log Result</button>
+</div>
+</div>
+</section>
+<!-- SYMPTOM CHECKER PAGE -->
+<section class="page-transition hidden-page" id="page-symptoms">
+<h1 class="font-headline-lg text-primary mb-lg">Symptom Checker (Tathmini ya Afya)</h1>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<div class="md:col-span-1 glass-card p-md rounded-xl h-fit">
+<h2 class="font-headline-md mb-md">Select Symptoms</h2>
+<div class="space-y-sm max-h-[530px] overflow-y-auto pr-xs" id="symptoms-list">
+<!-- JS loop for symptoms -->
+</div>
+</div>
+<div class="md:col-span-2 space-y-md">
+<div class="bg-surface-container rounded-xl p-lg min-h-[300px] flex flex-col items-center justify-center text-on-surface-variant italic border border-dashed border-outline" id="disease-results">
+<span class="material-symbols-outlined text-display-lg mb-sm" data-icon="search">search</span>
+                    Select symptoms to start diagnosis
+                </div>
+</div>
+</div>
+</section>
+<!-- FARM RECORDS PAGE -->
+<section class="page-transition hidden-page" id="page-records">
+<h1 class="font-headline-lg text-primary mb-lg">Kumbukumbu za Shamba (Farm Records)</h1>
+
+<div class="flex gap-xs overflow-x-auto pb-sm mb-lg" id="records-tabs">
+<button class="records-tab-btn whitespace-nowrap px-md py-sm rounded-xl font-label-lg transition-all" data-tab="milk" onclick="switchRecordTab('milk')">🥛 Milk Production</button>
+<button class="records-tab-btn whitespace-nowrap px-md py-sm rounded-xl font-label-lg transition-all" data-tab="breeding" onclick="switchRecordTab('breeding')">🐄 Breeding</button>
+<button class="records-tab-btn whitespace-nowrap px-md py-sm rounded-xl font-label-lg transition-all" data-tab="health" onclick="switchRecordTab('health')">💉 Health</button>
+<button class="records-tab-btn whitespace-nowrap px-md py-sm rounded-xl font-label-lg transition-all" data-tab="feed" onclick="switchRecordTab('feed')">🌾 Feed</button>
+<button class="records-tab-btn whitespace-nowrap px-md py-sm rounded-xl font-label-lg transition-all" data-tab="financial" onclick="switchRecordTab('financial')">💰 Financial</button>
+<button class="records-tab-btn whitespace-nowrap px-md py-sm rounded-xl font-label-lg transition-all" data-tab="inventory" onclick="switchRecordTab('inventory')">📋 Inventory</button>
+</div>
+
+<!-- MILK PRODUCTION SUBTAB -->
+<div class="record-subtab" id="records-milk">
+<div class="glass-card p-lg rounded-xl mb-lg">
+<h2 class="font-headline-md text-primary mb-md">Log Milk Production</h2>
+<form class="grid grid-cols-2 md:grid-cols-5 gap-md items-end" id="milk-form" onsubmit="addMilkRecord(event)">
+<div class="col-span-2 md:col-span-1">
+<label class="block font-label-lg mb-xs">Animal</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md" id="milk-animal" required></select>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Date</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="milk-date" required type="date"/>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Session</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md" id="milk-session">
+<option value="AM">AM</option>
+<option value="PM">PM</option>
+</select>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Liters</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="milk-liters" min="0" required step="0.1" type="number"/>
+</div>
+<button class="bg-secondary text-on-secondary py-md rounded-xl font-label-lg shadow-md" type="submit">Add Record</button>
+</form>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-lg" id="milk-monthly-summary"></div>
+
+<div class="glass-card p-lg rounded-xl overflow-x-auto">
+<h2 class="font-headline-md text-primary mb-md">Milk Log</h2>
+<table class="w-full text-left font-body-md">
+<thead>
+<tr class="border-b border-outline-variant text-on-surface-variant font-label-sm">
+<th class="py-sm pr-sm">Date</th><th class="py-sm pr-sm">Animal</th><th class="py-sm pr-sm">Session</th><th class="py-sm pr-sm">Liters</th><th class="py-sm pr-sm"></th>
+</tr>
+</thead>
+<tbody id="milk-table-body"></tbody>
+</table>
+</div>
+</div>
+
+<!-- BREEDING SUBTAB -->
+<div class="record-subtab" id="records-breeding" style="display:none">
+<div class="glass-card p-lg rounded-xl mb-lg">
+<h2 class="font-headline-md text-primary mb-md">Log Breeding Event</h2>
+<form class="grid grid-cols-2 md:grid-cols-5 gap-md items-end" id="breeding-form" onsubmit="addBreedingRecord(event)">
+<div class="col-span-2 md:col-span-1">
+<label class="block font-label-lg mb-xs">Animal</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md" id="breeding-animal" required></select>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Date</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="breeding-date" required type="date"/>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Event Type</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md" id="breeding-type">
+<option value="SERVICE">Service/Insemination</option>
+<option value="PREGNANCY_CHECK">Pregnancy Check</option>
+<option value="CALVING">Calving</option>
+</select>
+</div>
+<div class="col-span-2 md:col-span-1">
+<label class="block font-label-lg mb-xs">Details</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="breeding-details" placeholder="e.g. Bull used, result, calf info"/>
+</div>
+<button class="bg-secondary text-on-secondary py-md rounded-xl font-label-lg shadow-md" type="submit">Add Record</button>
+</form>
+</div>
+<div class="glass-card p-lg rounded-xl overflow-x-auto">
+<h2 class="font-headline-md text-primary mb-md">Breeding Log</h2>
+<table class="w-full text-left font-body-md">
+<thead>
+<tr class="border-b border-outline-variant text-on-surface-variant font-label-sm">
+<th class="py-sm pr-sm">Date</th><th class="py-sm pr-sm">Animal</th><th class="py-sm pr-sm">Event</th><th class="py-sm pr-sm">Details</th><th class="py-sm pr-sm"></th>
+</tr>
+</thead>
+<tbody id="breeding-table-body"></tbody>
+</table>
+</div>
+</div>
+
+<!-- HEALTH SUBTAB -->
+<div class="record-subtab" id="records-health" style="display:none">
+<div class="glass-card p-lg rounded-xl mb-lg">
+<h2 class="font-headline-md text-primary mb-md">Log Health Record</h2>
+<form class="grid grid-cols-2 md:grid-cols-6 gap-md items-end" id="health-form" onsubmit="addHealthRecord(event)">
+<div class="col-span-2 md:col-span-1">
+<label class="block font-label-lg mb-xs">Animal</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md" id="health-animal" required></select>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Date</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="health-date" required type="date"/>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Type</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md" id="health-type">
+<option value="VACCINATION">Vaccination</option>
+<option value="TREATMENT">Treatment</option>
+<option value="VET_VISIT">Vet Visit</option>
+<option value="DEWORMING">Deworming</option>
+<option value="ILLNESS">Illness</option>
+</select>
+</div>
+<div class="col-span-2 md:col-span-1">
+<label class="block font-label-lg mb-xs">Description</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="health-description" placeholder="e.g. LSD Booster"/>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Cost (KSh)</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="health-cost" min="0" type="number"/>
+</div>
+<button class="bg-secondary text-on-secondary py-md rounded-xl font-label-lg shadow-md" type="submit">Add Record</button>
+</form>
+</div>
+<div class="glass-card p-lg rounded-xl overflow-x-auto">
+<h2 class="font-headline-md text-primary mb-md">Health Log</h2>
+<table class="w-full text-left font-body-md">
+<thead>
+<tr class="border-b border-outline-variant text-on-surface-variant font-label-sm">
+<th class="py-sm pr-sm">Date</th><th class="py-sm pr-sm">Animal</th><th class="py-sm pr-sm">Type</th><th class="py-sm pr-sm">Description</th><th class="py-sm pr-sm">Cost</th><th class="py-sm pr-sm"></th>
+</tr>
+</thead>
+<tbody id="health-table-body"></tbody>
+</table>
+</div>
+</div>
+
+<!-- FEED SUBTAB -->
+<div class="record-subtab" id="records-feed" style="display:none">
+<div class="glass-card p-lg rounded-xl mb-lg">
+<h2 class="font-headline-md text-primary mb-md">Log Feed & Nutrition</h2>
+<form class="grid grid-cols-2 md:grid-cols-5 gap-md items-end" id="feed-form" onsubmit="addFeedRecord(event)">
+<div>
+<label class="block font-label-lg mb-xs">Date</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="feed-date" required type="date"/>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Feed Type</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="feed-type" placeholder="e.g. Napier, Dairy Meal" required/>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Quantity (Kg)</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="feed-quantity" min="0" required step="0.1" type="number"/>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Cost (KSh)</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="feed-cost" min="0" type="number"/>
+</div>
+<button class="bg-secondary text-on-secondary py-md rounded-xl font-label-lg shadow-md" type="submit">Add Record</button>
+</form>
+</div>
+<div class="glass-card p-lg rounded-xl overflow-x-auto">
+<h2 class="font-headline-md text-primary mb-md">Feed Log</h2>
+<table class="w-full text-left font-body-md">
+<thead>
+<tr class="border-b border-outline-variant text-on-surface-variant font-label-sm">
+<th class="py-sm pr-sm">Date</th><th class="py-sm pr-sm">Feed Type</th><th class="py-sm pr-sm">Quantity (Kg)</th><th class="py-sm pr-sm">Cost</th><th class="py-sm pr-sm"></th>
+</tr>
+</thead>
+<tbody id="feed-table-body"></tbody>
+</table>
+</div>
+</div>
+
+<!-- FINANCIAL SUBTAB -->
+<div class="record-subtab" id="records-financial" style="display:none">
+<div class="glass-card p-lg rounded-xl mb-lg">
+<h2 class="font-headline-md text-primary mb-md">Log Income / Expense</h2>
+<form class="grid grid-cols-2 md:grid-cols-5 gap-md items-end" id="financial-form" onsubmit="addFinancialRecord(event)">
+<div>
+<label class="block font-label-lg mb-xs">Date</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="financial-date" required type="date"/>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Type</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md" id="financial-type">
+<option value="INCOME">Income</option>
+<option value="EXPENSE">Expense</option>
+</select>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Category</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="financial-category" placeholder="e.g. Milk Sale, Feed" required/>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Amount (KSh)</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="financial-amount" min="0" required type="number"/>
+</div>
+<button class="bg-secondary text-on-secondary py-md rounded-xl font-label-lg shadow-md" type="submit">Add Record</button>
+</form>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-lg" id="financial-summary"></div>
+
+<div class="glass-card p-lg rounded-xl overflow-x-auto">
+<h2 class="font-headline-md text-primary mb-md">Financial Log</h2>
+<table class="w-full text-left font-body-md">
+<thead>
+<tr class="border-b border-outline-variant text-on-surface-variant font-label-sm">
+<th class="py-sm pr-sm">Date</th><th class="py-sm pr-sm">Type</th><th class="py-sm pr-sm">Category</th><th class="py-sm pr-sm">Amount</th><th class="py-sm pr-sm"></th>
+</tr>
+</thead>
+<tbody id="financial-table-body"></tbody>
+</table>
+</div>
+</div>
+
+<!-- INVENTORY SUBTAB -->
+<div class="record-subtab" id="records-inventory" style="display:none">
+<div class="glass-card p-lg rounded-xl overflow-x-auto">
+<h2 class="font-headline-md text-primary mb-md">Animal Inventory Register</h2>
+<table class="w-full text-left font-body-md">
+<thead>
+<tr class="border-b border-outline-variant text-on-surface-variant font-label-sm">
+<th class="py-sm pr-sm">Tag</th><th class="py-sm pr-sm">Name</th><th class="py-sm pr-sm">Breed</th><th class="py-sm pr-sm">Type</th><th class="py-sm pr-sm">Purpose</th><th class="py-sm pr-sm">Status</th><th class="py-sm pr-sm">Weight (Kg)</th>
+</tr>
+</thead>
+<tbody id="inventory-table-body"></tbody>
+</table>
+</div>
+</div>
+
+</section>
+<!-- ADD ANIMAL PAGE -->
+<section class="page-transition hidden-page" id="page-add">
+<h1 class="font-headline-lg text-primary mb-lg">Ongeza Mnyama (Add Animal)</h1>
+<div class="glass-card p-lg rounded-xl max-w-2xl mx-auto">
+<form class="space-y-md" id="add-animal-form" onsubmit="handleAddAnimalSubmit(event)">
+<div class="grid grid-cols-2 gap-md">
+<div class="col-span-2 md:col-span-1">
+<label class="block font-label-lg mb-xs">Animal Name</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="add-name" placeholder="e.g. Neema" required type="text"/>
+</div>
+<div class="col-span-2 md:col-span-1">
+<label class="block font-label-lg mb-xs">Tag Number</label>
+<input class="w-full bg-surface border border-outline rounded-xl p-md" id="add-tag" placeholder="#000" required type="text"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div>
+<label class="block font-label-lg mb-xs">Breed</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md" id="add-breed">
+<option>Friesian</option>
+<option>Ayrshire</option>
+<option>Boran</option>
+<option>Jersey</option>
+</select>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Type</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md" id="add-type">
+<option value="COW">Cow</option>
+<option value="BULL">Bull</option>
+<option value="HEIFER">Heifer</option>
+</select>
+</div>
+</div>
+<div>
+<label class="block font-label-lg mb-xs">Primary Purpose</label>
+<select class="w-full bg-surface border border-outline rounded-xl p-md" id="add-purpose">
+<option value="DAIRY">Dairy (Maziwa)</option>
+<option value="BEEF">Beef (Nyama)</option>
+<option value="BREEDING">Breeding</option>
+</select>
+</div>
+<button class="w-full bg-secondary text-on-secondary py-lg rounded-xl font-headline-md mt-lg hover:opacity-90 shadow-md" type="submit">Sajili Mnyama (Register Animal)</button>
+</form>
+</div>
+</section>
+</main>
+<!-- Bottom Nav (Mobile) -->
+<nav class="fixed bottom-0 w-full flex justify-around items-center h-16 bg-surface border-t border-outline-variant md:hidden z-50 shadow-lg">
+<button class="nav-item-mobile flex flex-col items-center justify-center text-on-surface-variant font-label-sm transition-colors" data-nav="dashboard" onclick="navigateTo('dashboard')">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Shamba</span>
+</button>
+<button class="nav-item-mobile flex flex-col items-center justify-center text-on-surface-variant font-label-sm transition-colors" data-nav="herd" onclick="navigateTo('herd')">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span>Mifugo</span>
+</button>
+<button class="nav-item-mobile flex flex-col items-center justify-center text-on-surface-variant font-label-sm transition-colors" data-nav="oestrus" onclick="navigateTo('oestrus')">
+<span class="material-symbols-outlined" data-icon="heat_pump">heat_pump</span>
+<span>Joto</span>
+</button>
+<button class="nav-item-mobile flex flex-col items-center justify-center text-on-surface-variant font-label-sm transition-colors" data-nav="symptoms" onclick="navigateTo('symptoms')">
+<span class="material-symbols-outlined" data-icon="medical_services">medical_services</span>
+<span>Dalili</span>
+</button>
+<button class="nav-item-mobile flex flex-col items-center justify-center text-on-surface-variant font-label-sm transition-colors" data-nav="records" onclick="navigateTo('records')">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+<span>Kumbukumbu</span>
+</button>
+</nav>
+<!-- Modal for Animal Profile -->
+<div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] hidden items-center justify-center p-md" id="profile-modal">
+<div class="bg-surface w-full max-w-xl rounded-2xl overflow-hidden shadow-xl animate-scaleIn">
+<div class="h-40 bg-cover bg-center relative bg-primary-container" id="modal-header-bg">
+<button class="absolute top-md right-md bg-white/20 backdrop-blur-md text-white p-xs rounded-full" onclick="closeModal()">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<div class="p-lg">
+<div class="flex justify-between items-start mb-md">
+<div>
+<h2 class="font-display-lg text-display-lg text-primary" id="modal-name">-</h2>
+<span class="font-body-md text-on-surface-variant" id="modal-tag">Tag #-</span>
+</div>
+<span class="px-md py-xs rounded-full font-label-lg" id="modal-status">-</span>
+</div>
+<div class="space-y-md">
+<div class="flex justify-between border-b border-outline-variant pb-xs">
+<span class="font-label-lg">Breed</span>
+<span class="font-body-md" id="modal-breed">-</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant pb-xs">
+<span class="font-label-lg">Purpose</span>
+<span class="font-body-md" id="modal-purpose">-</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant pb-xs">
+<span class="font-label-lg">Weight</span>
+<span class="font-body-md" id="modal-weight">-</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- /#app-shell -->
+
+<!-- Toast Notification -->
+<div class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-primary text-on-primary px-lg py-md rounded-xl shadow-lg opacity-0 transition-opacity z-[110] pointer-events-none" id="toast">
+    Success Message Here
+</div>
+
+<script>
+    // =====================================================================
+    // CONFIG & API LAYER
+    // =====================================================================
+    const API_BASE = 'http://localhost:4000/api/v1';
+
+    let accessToken = null;   // held in memory only — never persisted to storage
+    let currentUser = null;
+    let herd = [];            // cached after each /animals fetch, used to populate <select>s
+    let symptomsList = [];    // cached from /diseases/symptoms
+
+    /**
+     * Core fetch wrapper. Attaches the bearer token, retries once via silent
+     * refresh on a 401, and unwraps { success, data, meta } into a plain object.
+     */
+    async function api(path, options = {}) {
+        const res = await fetch(`${API_BASE}${path}`, {
+            method: options.method || 'GET',
+            credentials: 'include', // sends the httpOnly refresh cookie
+            headers: {
+                'Content-Type': 'application/json',
+                ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+            },
+            body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
+        });
+
+        if (res.status === 401 && !options._retried) {
+            const refreshed = await tryRefresh();
+            if (refreshed) return api(path, { ...options, _retried: true });
+            showAuthPage();
+            throw new Error('Session expired. Please log in again.');
+        }
+
+        let json = {};
+        try { json = await res.json(); } catch (e) { /* empty body, e.g. some error pages */ }
+
+        if (!res.ok) {
+            throw new Error((json.error && json.error.message) || `Request failed (${res.status})`);
+        }
+        return json; // { success, data, meta }
+    }
+
+    async function tryRefresh() {
+        try {
+            const res = await fetch(`${API_BASE}/auth/refresh`, { method: 'POST', credentials: 'include' });
+            if (!res.ok) return false;
+            const json = await res.json();
+            accessToken = json.data.accessToken;
+            currentUser = json.data.user;
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    // =====================================================================
+    // AUTH FLOW
+    // =====================================================================
+    function switchAuthTab(tab) {
+        document.getElementById('login-form').classList.toggle('hidden', tab !== 'login');
+        document.getElementById('register-form').classList.toggle('hidden', tab !== 'register');
+        document.querySelectorAll('.auth-tab-btn').forEach(btn => {
+            const active = btn.dataset.tab === tab;
+            btn.className = active
+                ? 'auth-tab-btn flex-1 py-md font-bold border-b-2 border-primary text-primary'
+                : 'auth-tab-btn flex-1 py-md text-on-surface-variant';
+        });
+        hideAuthError();
+    }
+
+    function showAuthError(message) {
+        const el = document.getElementById('auth-error');
+        el.textContent = message;
+        el.classList.remove('hidden');
+    }
+    function hideAuthError() {
+        document.getElementById('auth-error').classList.add('hidden');
+    }
+
+    function showAuthPage() {
+        accessToken = null;
+        currentUser = null;
+        document.getElementById('auth-page').classList.remove('hidden');
+        document.getElementById('app-shell').classList.add('hidden');
+    }
+
+    async function handleLogin(e) {
+        e.preventDefault();
+        hideAuthError();
+        const btn = document.getElementById('login-submit-btn');
+        btn.disabled = true; btn.textContent = 'Logging in...';
+        try {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const json = await api('/auth/login', { method: 'POST', body: { email, password } });
+            accessToken = json.data.accessToken;
+            currentUser = json.data.user;
+            await bootApp();
+        } catch (err) {
+            showAuthError(err.message);
+        } finally {
+            btn.disabled = false; btn.textContent = 'Log In';
+        }
+    }
+
+    async function handleRegister(e) {
+        e.preventDefault();
+        hideAuthError();
+        const btn = document.getElementById('register-submit-btn');
+        btn.disabled = true; btn.textContent = 'Creating account...';
+        try {
+            const name = document.getElementById('register-name').value;
+            const farmName = document.getElementById('register-farm').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const json = await api('/auth/register', { method: 'POST', body: { name, farmName, email, password } });
+            accessToken = json.data.accessToken;
+            currentUser = json.data.user;
+            await bootApp();
+        } catch (err) {
+            showAuthError(err.message);
+        } finally {
+            btn.disabled = false; btn.textContent = 'Create Account';
+        }
+    }
+
+    async function handleLogout() {
+        try { await api('/auth/logout', { method: 'POST' }); } catch (e) { /* ignore */ }
+        showAuthPage();
+    }
+
+    /** Reveals the main app and loads all initial data. Called after login/register/silent-refresh. */
+    async function bootApp() {
+        document.getElementById('auth-page').classList.add('hidden');
+        document.getElementById('app-shell').classList.remove('hidden');
+        await Promise.all([loadHerd(), initSymptoms()]);
+        navigateTo('dashboard');
+    }
+
+    // =====================================================================
+    // NAVIGATION
+    // =====================================================================
+    function navigateTo(pageId) {
+        const pages = ['dashboard', 'herd', 'oestrus', 'symptoms', 'records', 'add'];
+        pages.forEach(p => {
+            const el = document.getElementById(`page-${p}`);
+            if (p === pageId) {
+                el.classList.remove('hidden-page');
+                el.classList.add('active-page');
+            } else {
+                el.classList.remove('active-page');
+                el.classList.add('hidden-page');
+            }
+        });
+
+        document.querySelectorAll('[data-nav]').forEach(btn => {
+            const isActive = btn.dataset.nav === pageId;
+            if (window.innerWidth >= 768) {
+                btn.className = isActive
+                    ? "w-full flex items-center gap-md px-4 py-3 bg-secondary-container text-on-secondary-container rounded-r-full font-bold transition-all shadow-sm"
+                    : "w-full flex items-center gap-md px-4 py-3 text-on-primary-fixed-variant hover:bg-primary-fixed-dim hover:text-on-primary-fixed rounded-r-full transition-all";
+            } else {
+                btn.className = isActive
+                    ? "flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 transition-all"
+                    : "flex flex-col items-center justify-center text-on-surface-variant font-label-sm transition-all";
+            }
+        });
+
+        if (pageId === 'dashboard') loadDashboard();
+        if (pageId === 'herd') renderHerd();
+        if (pageId === 'oestrus') populateOestrusSelect();
+        if (pageId === 'records') {
+            populateAnimalSelects();
+            switchRecordTab(activeRecordTab);
+        }
+    }
+
+    // =====================================================================
+    // SHARED HELPERS
+    // =====================================================================
+    function todayStr() { return new Date().toISOString().split('T')[0]; }
+    function formatKsh(n) { return 'KSh ' + Number(n || 0).toLocaleString(); }
+    function animalName(id) {
+        const a = herd.find(c => c.id === id);
+        return a ? a.name : 'Unknown';
+    }
+    function getStatusClass(type) {
+        const t = (type || '').toUpperCase();
+        if (t === 'SUCCESS') return 'bg-secondary-container text-on-secondary-container';
+        if (t === 'ERROR') return 'bg-error-container text-on-error-container';
+        return 'bg-primary-container text-white';
+    }
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg;
+        t.classList.remove('opacity-0');
+        t.classList.add('opacity-100');
+        setTimeout(() => {
+            t.classList.remove('opacity-100');
+            t.classList.add('opacity-0');
+        }, 3000);
+    }
+    function showErrorToast(err) {
+        showToast(err.message || 'Something went wrong.');
+    }
+
+    async function loadHerd() {
+        const json = await api('/animals?limit=100');
+        herd = json.data;
+        return herd;
+    }
+
+    function populateAnimalSelects() {
+        const selects = ['milk-animal', 'breeding-animal', 'health-animal'];
+        selects.forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.innerHTML = herd.map(a => `<option value="${a.id}">${a.name} (${a.tagNumber})</option>`).join('');
+        });
+    }
+
+    function populateOestrusSelect() {
+        const el = document.getElementById('oestrus-cow-select');
+        el.innerHTML = herd.map(a => `<option value="${a.id}">${a.name} (${a.tagNumber})</option>`).join('');
+    }
+
+    // =====================================================================
+    // DASHBOARD
+    // =====================================================================
+    async function loadDashboard() {
+        try {
+            const json = await api('/dashboard/summary');
+            const d = json.data;
+            document.getElementById('stat-total').innerText = d.totals.animals;
+            document.getElementById('stat-cows').innerText = d.totals.cows;
+            document.getElementById('stat-bulls').innerText = d.totals.bulls;
+            document.getElementById('stat-alerts').innerText = d.totals.alerts;
+            document.getElementById('dash-revenue').innerText = formatKsh(d.financials.revenue);
+            document.getElementById('dash-expenses').innerText = formatKsh(d.financials.expenses);
+            document.getElementById('dash-profit').innerText = formatKsh(d.financials.netProfit);
+
+            const labelsEl = document.getElementById('milk-trend-labels');
+            labelsEl.innerHTML = d.milkTrend.length
+                ? d.milkTrend.map(m => `<span class="text-label-sm text-on-surface-variant">${m.date.slice(5, 10)}</span>`).join('')
+                : '<span class="text-label-sm text-on-surface-variant">No milk records yet</span>';
+
+            const alertsEl = document.getElementById('dashboard-alerts');
+            alertsEl.innerHTML = d.alerts.length
+                ? d.alerts.map(a => `
+                    <div class="glass-card p-md rounded-xl flex items-center gap-md border-l-4 ${a.severity === 'error' ? 'border-error' : 'border-primary'}">
+                        <div class="${a.severity === 'error' ? 'bg-error-container text-error' : 'bg-primary-container text-primary'} p-sm rounded-full">
+                            <span class="material-symbols-outlined" data-icon="warning">warning</span>
+                        </div>
+                        <div><h3 class="font-headline-md text-on-surface">${a.title}</h3></div>
+                    </div>`).join('')
+                : '<p class="text-on-surface-variant italic">No alerts right now.</p>';
+        } catch (err) {
+            showErrorToast(err);
+        }
+    }
+
+    // =====================================================================
+    // MY HERD
+    // =====================================================================
+    async function renderHerd() {
+        try {
+            await loadHerd();
+            document.getElementById('herd-count-badge').innerText = `${herd.length} Total`;
+            const container = document.getElementById('herd-container');
+            container.innerHTML = herd.map(cow => `
+                <div onclick="openProfile('${cow.id}')" class="glass-card p-md rounded-xl cursor-pointer hover:shadow-lg transition-all active:scale-95">
+                    <div class="flex justify-between items-start mb-sm">
+                        <span class="font-headline-md text-primary">${cow.name}</span>
+                        <span class="px-sm py-xs rounded-lg font-label-sm ${getStatusClass(cow.statusType)}">${cow.status}</span>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="text-on-surface-variant font-label-sm">Tag: ${cow.tagNumber}</div>
+                        <div class="text-on-surface-variant font-label-sm">Breed: ${cow.breed}</div>
+                    </div>
+                </div>
+            `).join('');
+        } catch (err) {
+            showErrorToast(err);
+        }
+    }
+
+    function openProfile(id) {
+        const cow = herd.find(c => c.id === id);
+        if (!cow) return;
+        document.getElementById('modal-name').innerText = cow.name;
+        document.getElementById('modal-tag').innerText = `Tag ${cow.tagNumber}`;
+        document.getElementById('modal-status').innerText = cow.status;
+        document.getElementById('modal-status').className = `px-md py-xs rounded-full font-label-lg ${getStatusClass(cow.statusType)}`;
+        document.getElementById('modal-breed').innerText = cow.breed;
+        document.getElementById('modal-purpose').innerText = cow.purpose;
+        document.getElementById('modal-weight').innerText = cow.weightKg ? `${cow.weightKg} kg` : '-';
+        const modal = document.getElementById('profile-modal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+    function closeModal() {
+        const modal = document.getElementById('profile-modal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    // =====================================================================
+    // OESTRUS CHECKER
+    // =====================================================================
+    const oestrusSigns = [
+        'Restlessness', 'Mounting Others', 'Clear Discharge', 'Standing to be Mounted',
+        'Decreased Milk', 'Bellowing', 'Swollen Vulva', 'Chin Resting'
+    ];
+
+    function initOestrusSigns() {
+        const container = document.getElementById('oestrus-signs');
+        container.innerHTML = oestrusSigns.map(sign => `
+            <label class="flex items-center gap-sm p-md border border-outline-variant rounded-xl cursor-pointer hover:bg-surface-container-low transition-colors">
+                <input type="checkbox" name="oestrus-sign" value="${sign}" class="w-5 h-5 rounded border-outline text-primary focus:ring-primary">
+                <span class="font-body-md">${sign}</span>
+            </label>
+        `).join('');
+    }
+
+    /** Instant client-side preview — mirrors the server's >=4/>=1/0 threshold exactly. */
+    function analyzeOestrus() {
+        const checked = document.querySelectorAll('input[name="oestrus-sign"]:checked').length;
+        const res = document.getElementById('oestrus-result');
+        res.classList.remove('hidden');
+
+        if (checked >= 4) {
+            res.className = 'mb-lg p-md rounded-xl text-center bg-error-container text-on-error-container font-bold';
+            res.innerHTML = "High Probability! Optimal window for insemination is NOW.";
+        } else if (checked >= 1) {
+            res.className = 'mb-lg p-md rounded-xl text-center bg-primary-container text-white font-bold';
+            res.innerHTML = "Possible signs. Monitor closely every 4 hours.";
+        } else {
+            res.className = 'mb-lg p-md rounded-xl text-center bg-surface-container text-on-surface-variant';
+            res.innerHTML = "No significant signs detected.";
+        }
+    }
+
+    /** Persists the check to the backend — server computes the authoritative result level. */
+    async function logOestrus() {
+        const animalId = document.getElementById('oestrus-cow-select').value;
+        if (!animalId) { showToast('Add an animal first.'); return; }
+        const signs = Array.from(document.querySelectorAll('input[name="oestrus-sign"]:checked')).map(i => i.value);
+        try {
+            const json = await api('/records/oestrus', { method: 'POST', body: { animalId, signs } });
+            showToast(`Logged to history — result: ${json.data.resultLevel}`);
+        } catch (err) {
+            showErrorToast(err);
+        }
+    }
+
+    // =====================================================================
+    // SYMPTOM CHECKER
+    // =====================================================================
+    async function initSymptoms() {
+        try {
+            const json = await api('/diseases/symptoms');
+            symptomsList = json.data;
+        } catch (err) {
+            symptomsList = []; // dashboard/herd can still work even if this fails
+        }
+        const container = document.getElementById('symptoms-list');
+        container.innerHTML = symptomsList.map(s => `
+            <label class="flex items-center gap-sm p-sm border border-outline-variant rounded-lg cursor-pointer hover:bg-surface-container-low transition-colors">
+                <input type="checkbox" name="symptom" value="${s.name}" onchange="analyzeSymptoms()" class="w-4 h-4 rounded border-outline text-primary focus:ring-primary">
+                <span class="font-label-lg">${s.name}</span>
+            </label>
+        `).join('');
+    }
+
+    async function analyzeSymptoms() {
+        const selected = Array.from(document.querySelectorAll('input[name="symptom"]:checked')).map(i => i.value);
+        const container = document.getElementById('disease-results');
+
+        if (selected.length === 0) {
+            container.innerHTML = `<span class="material-symbols-outlined text-display-lg mb-sm" data-icon="search">search</span> Select symptoms to start diagnosis`;
+            return;
+        }
+
+        try {
+            const json = await api(`/diseases/match?symptoms=${encodeURIComponent(selected.join(','))}`);
+            const results = json.data;
+
+            if (results.length === 0) {
+                container.innerHTML = "No disease matches found for selected symptoms. Consult a professional.";
+                return;
+            }
+
+            container.innerHTML = results.map(r => `
+                <div class="w-full bg-surface border border-outline-variant p-md rounded-xl mb-md glass-card">
+                    <div class="flex justify-between items-start mb-sm">
+                        <h3 class="font-headline-md">${r.name}</h3>
+                        <span class="font-label-lg ${r.confidence > 60 ? 'text-error' : 'text-primary'}">${r.confidence}% Match</span>
+                    </div>
+                    <div class="w-full bg-outline-variant h-2 rounded-full mb-md overflow-hidden">
+                        <div class="bg-primary h-full transition-all duration-500" style="width: ${r.confidence}%"></div>
+                    </div>
+                    <div class="flex items-center gap-xs text-on-surface-variant font-body-md italic mb-md">
+                        <span class="material-symbols-outlined text-md" data-icon="lightbulb">lightbulb</span> Action: ${r.action}
+                    </div>
+                </div>
+            `).join('');
+        } catch (err) {
+            showErrorToast(err);
+        }
+    }
+
+    // =====================================================================
+    // FARM RECORDS
+    // =====================================================================
+    let activeRecordTab = 'milk';
+
+    function switchRecordTab(tab) {
+        activeRecordTab = tab;
+        document.querySelectorAll('.record-subtab').forEach(el => el.style.display = 'none');
+        document.getElementById(`records-${tab}`).style.display = 'block';
+        document.querySelectorAll('.records-tab-btn').forEach(btn => {
+            const isActive = btn.dataset.tab === tab;
+            btn.className = isActive
+                ? 'records-tab-btn whitespace-nowrap px-md py-sm rounded-xl font-label-lg transition-all bg-primary text-on-primary shadow-md'
+                : 'records-tab-btn whitespace-nowrap px-md py-sm rounded-xl font-label-lg transition-all bg-surface-container-lowest text-on-surface-variant border border-outline-variant';
+        });
+
+        if (tab === 'milk') { document.getElementById('milk-date').value = todayStr(); renderMilkRecords(); }
+        if (tab === 'breeding') { document.getElementById('breeding-date').value = todayStr(); renderBreedingRecords(); }
+        if (tab === 'health') { document.getElementById('health-date').value = todayStr(); renderHealthRecords(); }
+        if (tab === 'feed') { document.getElementById('feed-date').value = todayStr(); renderFeedRecords(); }
+        if (tab === 'financial') { document.getElementById('financial-date').value = todayStr(); renderFinancialRecords(); }
+        if (tab === 'inventory') { renderInventory(); }
+    }
+
+    // --- Milk ---
+    async function addMilkRecord(e) {
+        e.preventDefault();
+        try {
+            await api('/records/milk', {
+                method: 'POST',
+                body: {
+                    animalId: document.getElementById('milk-animal').value,
+                    date: document.getElementById('milk-date').value,
+                    session: document.getElementById('milk-session').value,
+                    liters: Number(document.getElementById('milk-liters').value),
+                },
+            });
+            e.target.reset();
+            document.getElementById('milk-date').value = todayStr();
+            await renderMilkRecords();
+            showToast('Milk record added.');
+        } catch (err) { showErrorToast(err); }
+    }
+
+    async function renderMilkRecords() {
+        try {
+            const json = await api('/records/milk?limit=100');
+            const rows = json.data;
+            document.getElementById('milk-table-body').innerHTML = rows.map(r => `
+                <tr class="border-b border-outline-variant">
+                    <td class="py-sm pr-sm">${r.date.slice(0, 10)}</td>
+                    <td class="py-sm pr-sm">${r.animal ? r.animal.name : animalName(r.animalId)}</td>
+                    <td class="py-sm pr-sm">${r.session}</td>
+                    <td class="py-sm pr-sm">${r.liters} L</td>
+                    <td class="py-sm pr-sm"><button class="text-error text-label-sm" onclick="deleteMilk('${r.id}')">Delete</button></td>
+                </tr>
+            `).join('') || `<tr><td colspan="5" class="py-md text-on-surface-variant italic">No milk records yet.</td></tr>`;
+
+            // Monthly summary, computed client-side from the fetched records
+            const monthTotals = {};
+            rows.forEach(r => {
+                const month = r.date.slice(0, 7);
+                if (!monthTotals[month]) monthTotals[month] = { total: 0, byAnimal: {} };
+                monthTotals[month].total += Number(r.liters);
+                const key = r.animalId;
+                monthTotals[month].byAnimal[key] = (monthTotals[month].byAnimal[key] || 0) + Number(r.liters);
+            });
+            const months = Object.keys(monthTotals).sort().reverse();
+            const summaryEl = document.getElementById('milk-monthly-summary');
+            summaryEl.innerHTML = months.slice(0, 3).map(m => {
+                const data = monthTotals[m];
+                const topAnimal = Object.entries(data.byAnimal).sort((a, b) => b[1] - a[1])[0];
+                return `
+                <div class="glass-card p-md rounded-xl">
+                    <span class="text-label-sm text-on-surface-variant">${m} Total</span>
+                    <div class="text-headline-lg font-bold text-primary">${data.total.toFixed(1)} L</div>
+                    <div class="text-label-sm text-on-surface-variant mt-xs">Top: ${animalName(topAnimal[0])} (${topAnimal[1].toFixed(1)} L)</div>
+                </div>`;
+            }).join('');
+        } catch (err) { showErrorToast(err); }
+    }
+
+    async function deleteMilk(id) {
+        try { await api(`/records/milk/${id}`, { method: 'DELETE' }); await renderMilkRecords(); showToast('Deleted.'); }
+        catch (err) { showErrorToast(err); }
+    }
+
+    // --- Breeding ---
+    async function addBreedingRecord(e) {
+        e.preventDefault();
+        try {
+            await api('/records/breeding', {
+                method: 'POST',
+                body: {
+                    animalId: document.getElementById('breeding-animal').value,
+                    date: document.getElementById('breeding-date').value,
+                    eventType: document.getElementById('breeding-type').value,
+                    details: document.getElementById('breeding-details').value,
+                },
+            });
+            e.target.reset();
+            document.getElementById('breeding-date').value = todayStr();
+            await renderBreedingRecords();
+            showToast('Breeding record added.');
+        } catch (err) { showErrorToast(err); }
+    }
+
+    async function renderBreedingRecords() {
+        try {
+            const json = await api('/records/breeding?limit=100');
+            document.getElementById('breeding-table-body').innerHTML = json.data.map(r => `
+                <tr class="border-b border-outline-variant">
+                    <td class="py-sm pr-sm">${r.date.slice(0, 10)}</td>
+                    <td class="py-sm pr-sm">${r.animal ? r.animal.name : animalName(r.animalId)}</td>
+                    <td class="py-sm pr-sm">${r.eventType}</td>
+                    <td class="py-sm pr-sm">${r.details || '-'}</td>
+                    <td class="py-sm pr-sm"><button class="text-error text-label-sm" onclick="deleteBreeding('${r.id}')">Delete</button></td>
+                </tr>
+            `).join('') || `<tr><td colspan="5" class="py-md text-on-surface-variant italic">No breeding records yet.</td></tr>`;
+        } catch (err) { showErrorToast(err); }
+    }
+
+    async function deleteBreeding(id) {
+        try { await api(`/records/breeding/${id}`, { method: 'DELETE' }); await renderBreedingRecords(); showToast('Deleted.'); }
+        catch (err) { showErrorToast(err); }
+    }
+
+    // --- Health ---
+    async function addHealthRecord(e) {
+        e.preventDefault();
+        try {
+            await api('/records/health', {
+                method: 'POST',
+                body: {
+                    animalId: document.getElementById('health-animal').value,
+                    date: document.getElementById('health-date').value,
+                    type: document.getElementById('health-type').value,
+                    description: document.getElementById('health-description').value,
+                    cost: Number(document.getElementById('health-cost').value || 0),
+                },
+            });
+            e.target.reset();
+            document.getElementById('health-date').value = todayStr();
+            await renderHealthRecords();
+            showToast('Health record added.');
+        } catch (err) { showErrorToast(err); }
+    }
+
+    async function renderHealthRecords() {
+        try {
+            const json = await api('/records/health?limit=100');
+            document.getElementById('health-table-body').innerHTML = json.data.map(r => `
+                <tr class="border-b border-outline-variant">
+                    <td class="py-sm pr-sm">${r.date.slice(0, 10)}</td>
+                    <td class="py-sm pr-sm">${r.animal ? r.animal.name : animalName(r.animalId)}</td>
+                    <td class="py-sm pr-sm">${r.type}</td>
+                    <td class="py-sm pr-sm">${r.description || '-'}</td>
+                    <td class="py-sm pr-sm">${formatKsh(r.cost)}</td>
+                    <td class="py-sm pr-sm"><button class="text-error text-label-sm" onclick="deleteHealth('${r.id}')">Delete</button></td>
+                </tr>
+            `).join('') || `<tr><td colspan="6" class="py-md text-on-surface-variant italic">No health records yet.</td></tr>`;
+        } catch (err) { showErrorToast(err); }
+    }
+
+    async function deleteHealth(id) {
+        try { await api(`/records/health/${id}`, { method: 'DELETE' }); await renderHealthRecords(); showToast('Deleted.'); }
+        catch (err) { showErrorToast(err); }
+    }
+
+    // --- Feed ---
+    async function addFeedRecord(e) {
+        e.preventDefault();
+        try {
+            await api('/records/feed', {
+                method: 'POST',
+                body: {
+                    date: document.getElementById('feed-date').value,
+                    feedType: document.getElementById('feed-type').value,
+                    quantityKg: Number(document.getElementById('feed-quantity').value),
+                    cost: Number(document.getElementById('feed-cost').value || 0),
+                },
+            });
+            e.target.reset();
+            document.getElementById('feed-date').value = todayStr();
+            await renderFeedRecords();
+            showToast('Feed record added.');
+        } catch (err) { showErrorToast(err); }
+    }
+
+    async function renderFeedRecords() {
+        try {
+            const json = await api('/records/feed?limit=100');
+            document.getElementById('feed-table-body').innerHTML = json.data.map(r => `
+                <tr class="border-b border-outline-variant">
+                    <td class="py-sm pr-sm">${r.date.slice(0, 10)}</td>
+                    <td class="py-sm pr-sm">${r.feedType}</td>
+                    <td class="py-sm pr-sm">${r.quantityKg} kg</td>
+                    <td class="py-sm pr-sm">${formatKsh(r.cost)}</td>
+                    <td class="py-sm pr-sm"><button class="text-error text-label-sm" onclick="deleteFeed('${r.id}')">Delete</button></td>
+                </tr>
+            `).join('') || `<tr><td colspan="5" class="py-md text-on-surface-variant italic">No feed records yet.</td></tr>`;
+        } catch (err) { showErrorToast(err); }
+    }
+
+    async function deleteFeed(id) {
+        try { await api(`/records/feed/${id}`, { method: 'DELETE' }); await renderFeedRecords(); showToast('Deleted.'); }
+        catch (err) { showErrorToast(err); }
+    }
+
+    // --- Financial ---
+    async function addFinancialRecord(e) {
+        e.preventDefault();
+        try {
+            await api('/records/financial', {
+                method: 'POST',
+                body: {
+                    date: document.getElementById('financial-date').value,
+                    type: document.getElementById('financial-type').value,
+                    category: document.getElementById('financial-category').value,
+                    amount: Number(document.getElementById('financial-amount').value),
+                },
+            });
+            e.target.reset();
+            document.getElementById('financial-date').value = todayStr();
+            await renderFinancialRecords();
+            showToast('Financial record added.');
+        } catch (err) { showErrorToast(err); }
+    }
+
+    async function renderFinancialRecords() {
+        try {
+            const json = await api('/records/financial?limit=100');
+            document.getElementById('financial-table-body').innerHTML = json.data.map(r => `
+                <tr class="border-b border-outline-variant">
+                    <td class="py-sm pr-sm">${r.date.slice(0, 10)}</td>
+                    <td class="py-sm pr-sm">${r.type}</td>
+                    <td class="py-sm pr-sm">${r.category}</td>
+                    <td class="py-sm pr-sm ${r.type === 'INCOME' ? 'text-secondary' : 'text-error'}">${formatKsh(r.amount)}</td>
+                    <td class="py-sm pr-sm"><button class="text-error text-label-sm" onclick="deleteFinancial('${r.id}')">Delete</button></td>
+                </tr>
+            `).join('') || `<tr><td colspan="5" class="py-md text-on-surface-variant italic">No financial records yet.</td></tr>`;
+
+            const s = json.meta && json.meta.summary ? json.meta.summary : { income: 0, expense: 0, netProfit: 0 };
+            document.getElementById('financial-summary').innerHTML = `
+                <div class="glass-card p-md rounded-xl"><span class="text-label-sm text-on-surface-variant">Total Income</span><div class="text-headline-lg font-bold text-secondary">${formatKsh(s.income)}</div></div>
+                <div class="glass-card p-md rounded-xl"><span class="text-label-sm text-on-surface-variant">Total Expenses</span><div class="text-headline-lg font-bold text-error">${formatKsh(s.expense)}</div></div>
+                <div class="glass-card p-md rounded-xl"><span class="text-label-sm text-on-surface-variant">Net Profit</span><div class="text-headline-lg font-bold text-primary">${formatKsh(s.netProfit)}</div></div>
+            `;
+        } catch (err) { showErrorToast(err); }
+    }
+
+    async function deleteFinancial(id) {
+        try { await api(`/records/financial/${id}`, { method: 'DELETE' }); await renderFinancialRecords(); showToast('Deleted.'); }
+        catch (err) { showErrorToast(err); }
+    }
+
+    // --- Inventory (derived from herd, no separate endpoint needed) ---
+    async function renderInventory() {
+        await loadHerd();
+        document.getElementById('inventory-table-body').innerHTML = herd.map(a => `
+            <tr class="border-b border-outline-variant">
+                <td class="py-sm pr-sm">${a.tagNumber}</td>
+                <td class="py-sm pr-sm">${a.name}</td>
+                <td class="py-sm pr-sm">${a.breed}</td>
+                <td class="py-sm pr-sm">${a.type || '-'}</td>
+                <td class="py-sm pr-sm">${a.purpose}</td>
+                <td class="py-sm pr-sm"><span class="px-sm py-xs rounded-lg font-label-sm ${getStatusClass(a.statusType)}">${a.status}</span></td>
+                <td class="py-sm pr-sm">${a.weightKg ? a.weightKg + ' kg' : '-'}</td>
+            </tr>
+        `).join('');
+    }
+
+    // =====================================================================
+    // ADD ANIMAL
+    // =====================================================================
+    async function handleAddAnimalSubmit(e) {
+        e.preventDefault();
+        try {
+            await api('/animals', {
+                method: 'POST',
+                body: {
+                    name: document.getElementById('add-name').value,
+                    tagNumber: document.getElementById('add-tag').value,
+                    breed: document.getElementById('add-breed').value,
+                    type: document.getElementById('add-type').value,
+                    purpose: document.getElementById('add-purpose').value,
+                },
+            });
+            showToast(`${document.getElementById('add-name').value} has been added to your herd!`);
+            e.target.reset();
+            setTimeout(() => navigateTo('herd'), 800);
+        } catch (err) {
+            showErrorToast(err);
+        }
+    }
+
+    // =====================================================================
+    // CSV EXPORT
+    // =====================================================================
+    async function exportToCSV() {
+        try {
+            const res = await fetch(`${API_BASE}/export/csv`, {
+                headers: { Authorization: `Bearer ${accessToken}` },
+                credentials: 'include',
+            });
+            if (!res.ok) throw new Error('Export failed');
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'heat_farm_data.csv';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            showToast('Data exported successfully ✓');
+        } catch (err) {
+            showErrorToast(err);
+        }
+    }
+
+    // =====================================================================
+    // INIT — attempt a silent session restore via the refresh cookie before
+    // falling back to the login page.
+    // =====================================================================
+    document.addEventListener('DOMContentLoaded', async () => {
+        initOestrusSigns();
+        const restored = await tryRefresh();
+        if (restored) {
+            await bootApp();
+        } else {
+            showAuthPage();
+        }
+    });
+</script>
+</body></html>

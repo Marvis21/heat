@@ -1,0 +1,242 @@
+// Prisma schema for the "Heat" cattle management backend.
+// Design notes:
+// - Every farm-data table is scoped to a User (multi-tenant: each farmer sees only their own data).
+// - Animal-centric records (milk, breeding, health, oestrus) reference Animal, which itself belongs to a User.
+// - Farm-wide records (feed, financial) belong directly to a User.
+// - Disease/Symptom tables are global reference/lookup data (seeded), used by the symptom-checker endpoint.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  FARMER
+  ADMIN
+}
+
+enum AnimalType {
+  COW
+  BULL
+  HEIFER
+}
+
+enum AnimalPurpose {
+  DAIRY
+  BEEF
+  BREEDING
+}
+
+enum AnimalStatusType {
+  SUCCESS // Healthy
+  ERROR   // Sick / Heat Alert / Urgent
+  PRIMARY // Pregnant / informational
+}
+
+enum MilkSession {
+  AM
+  PM
+}
+
+enum BreedingEventType {
+  SERVICE
+  PREGNANCY_CHECK
+  CALVING
+}
+
+enum HealthRecordType {
+  VACCINATION
+  TREATMENT
+  VET_VISIT
+  DEWORMING
+  ILLNESS
+}
+
+enum FinancialType {
+  INCOME
+  EXPENSE
+}
+
+enum OestrusResultLevel {
+  NONE
+  POSSIBLE
+  HIGH
+}
+
+model User {
+  id                String    @id @default(uuid())
+  email             String    @unique
+  passwordHash      String    @map("password_hash")
+  name              String
+  farmName          String?   @map("farm_name")
+  role              Role      @default(FARMER)
+  isEmailVerified   Boolean   @default(false) @map("is_email_verified")
+  emailVerifyToken  String?   @map("email_verify_token")
+  resetToken        String?   @map("reset_token")
+  resetTokenExpires DateTime? @map("reset_token_expires")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  animals           Animal[]
+  feedRecords       FeedRecord[]
+  financialRecords  FinancialRecord[]
+  refreshTokens     RefreshToken[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime @map("expires_at")
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model Animal {
+  id           String            @id @default(uuid())
+  userId       String            @map("user_id")
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  tagNumber    String            @map("tag_number")
+  breed        String
+  type         AnimalType        @default(COW)
+  purpose      AnimalPurpose     @default(DAIRY)
+  status       String            @default("Healthy")
+  statusType   AnimalStatusType  @default(SUCCESS) @map("status_type")
+  weightKg     Decimal?          @map("weight_kg") @db.Decimal(8, 2)
+  lastCalving  DateTime?         @map("last_calving")
+  photoUrl     String?           @map("photo_url")
+  createdAt    DateTime          @default(now()) @map("created_at")
+  updatedAt    DateTime          @updatedAt @map("updated_at")
+
+  milkRecords     MilkRecord[]
+  breedingRecords BreedingRecord[]
+  healthRecords   HealthRecord[]
+  oestrusChecks   OestrusCheck[]
+
+  @@unique([userId, tagNumber])
+  @@index([userId])
+  @@map("animals")
+}
+
+model MilkRecord {
+  id       String      @id @default(uuid())
+  animalId String      @map("animal_id")
+  animal   Animal      @relation(fields: [animalId], references: [id], onDelete: Cascade)
+  date     DateTime    @db.Date
+  session  MilkSession
+  liters   Decimal     @db.Decimal(6, 2)
+  createdAt DateTime   @default(now()) @map("created_at")
+
+  @@index([animalId, date])
+  @@map("milk_records")
+}
+
+model BreedingRecord {
+  id        String            @id @default(uuid())
+  animalId  String            @map("animal_id")
+  animal    Animal            @relation(fields: [animalId], references: [id], onDelete: Cascade)
+  date      DateTime          @db.Date
+  eventType BreedingEventType @map("event_type")
+  details   String?
+  createdAt DateTime          @default(now()) @map("created_at")
+
+  @@index([animalId, date])
+  @@map("breeding_records")
+}
+
+model OestrusCheck {
+  id           String             @id @default(uuid())
+  animalId     String             @map("animal_id")
+  animal       Animal             @relation(fields: [animalId], references: [id], onDelete: Cascade)
+  date         DateTime           @default(now())
+  signs        String[]
+  resultLevel  OestrusResultLevel @map("result_level")
+  notes        String?
+  createdAt    DateTime           @default(now()) @map("created_at")
+
+  @@index([animalId, date])
+  @@map("oestrus_checks")
+}
+
+model HealthRecord {
+  id          String           @id @default(uuid())
+  animalId    String           @map("animal_id")
+  animal      Animal           @relation(fields: [animalId], references: [id], onDelete: Cascade)
+  date        DateTime         @db.Date
+  type        HealthRecordType
+  description String?
+  cost        Decimal          @default(0) @db.Decimal(10, 2)
+  createdAt   DateTime         @default(now()) @map("created_at")
+
+  @@index([animalId, date])
+  @@map("health_records")
+}
+
+model FeedRecord {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date       DateTime @db.Date
+  feedType   String   @map("feed_type")
+  quantityKg Decimal  @map("quantity_kg") @db.Decimal(8, 2)
+  cost       Decimal  @default(0) @db.Decimal(10, 2)
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([userId, date])
+  @@map("feed_records")
+}
+
+model FinancialRecord {
+  id        String        @id @default(uuid())
+  userId    String        @map("user_id")
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      DateTime      @db.Date
+  type      FinancialType
+  category  String
+  amount    Decimal       @db.Decimal(10, 2)
+  createdAt DateTime      @default(now()) @map("created_at")
+
+  @@index([userId, date])
+  @@map("financial_records")
+}
+
+// --- Reference / lookup data for the Symptom Checker (global, not user-scoped) ---
+
+model Symptom {
+  id       String              @id @default(uuid())
+  name     String              @unique
+  diseases DiseaseSymptom[]
+
+  @@map("symptoms")
+}
+
+model Disease {
+  name      String   // e.g. "East Coast Fever (ECF)"
+  action    String   // recommended action text
+  severity  String   // "error" | "primary" — mirrors frontend color coding
+  id        String   @id @default(uuid())
+  symptoms  DiseaseSymptom[]
+
+  @@map("diseases")
+}
+
+model DiseaseSymptom {
+  diseaseId String  @map("disease_id")
+  symptomId String  @map("symptom_id")
+  disease   Disease @relation(fields: [diseaseId], references: [id], onDelete: Cascade)
+  symptom   Symptom @relation(fields: [symptomId], references: [id], onDelete: Cascade)
+
+  @@id([diseaseId, symptomId])
+  @@map("disease_symptoms")
+}
